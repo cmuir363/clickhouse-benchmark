@@ -1,0 +1,10 @@
+truststore.password=${KAFKA_STORE_PASSWORD}
+keystore.password=${KAFKA_STORE_PASSWORD}
+key.password=${KAFKA_STORE_PASSWORD}
+certs.location=certs/
+bootstrap.servers=${KAFKA_BOOTSTRAP_BROKER}
+security.protocol=SSL
+ssl.truststore.filename=/client.truststore.jks
+ssl.keystore.type=PKCS12
+ssl.keystore.filename=/client.keystore.p12
+message.frequency=${KAFKA_MESSAGE_FREQUENCY}
