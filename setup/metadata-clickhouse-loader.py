@@ -47,5 +47,5 @@ with open('../iot-simulator/src/main/resources/sensors.csv', mode='r') as file:
     if rows:
         final_query = insert_query + ",".join(rows)
         
-
+client.command(final_query)
 print("CSV data loaded into ClickHouse successfully.")
