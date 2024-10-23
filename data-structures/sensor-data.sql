@@ -138,3 +138,5 @@ WHERE highValue > q.quant90Value
 -- Read the data
 SELECT * FROM iot_analytics.high_value_alerts
 
+
+-- Send this data to Kafka
