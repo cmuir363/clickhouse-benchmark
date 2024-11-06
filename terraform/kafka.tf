@@ -31,3 +31,31 @@ resource "aiven_kafka_topic" "iot_measurements" {
     retention_ms                   = "4800000"
   }
 }
+
+resource "aiven_kafka_topic" "iot_measurements_high_values" {
+  project                = var.aiven_project
+  service_name           = aiven_kafka.kafka.service_name
+  topic_name             = "iot_measurements_high_values"
+  partitions             = 50
+  replication            = 3
+  termination_protection = false
+
+  config {
+    cleanup_policy                 = "delete"
+    retention_ms                   = "4800000"
+  }
+}
+
+resource "aiven_kafka_topic" "iot_aggregates_values" {
+  project                = var.aiven_project
+  service_name           = aiven_kafka.kafka.service_name
+  topic_name             = "iot_aggregates_values"
+  partitions             = 50
+  replication            = 3
+  termination_protection = false
+
+  config {
+    cleanup_policy                 = "delete"
+    retention_ms                   = "4800000"
+  }
+}

@@ -100,7 +100,8 @@ CREATE OR REPLACE TABLE iot_analytics.high_value_alerts
     sensorId String,
     sensorType Enum ('Temperature' = 1, 'Humidity' = 2, 'Pressure' = 3, 'Vibration' = 4, 'Current' = 5, 'Rotation' = 6),
     highValue Float64,
-    quant90Value Float64
+    quant90Value Float64,
+    timestamp DateTime64
 ) ENGINE = MergeTree()
 ORDER BY ("ownerId", "factoryId", "sensorId");
 
@@ -129,7 +130,8 @@ SELECT
     m.factoryId,
     m.sensorId,
     m.value as highValue,
-    q.quant90Value
+    q.quant90Value,
+    m.timestamp
 FROM iot_analytics.iot_measurements_raw AS m
 ANY LEFT JOIN iot_analytics.quantile_dict AS q
 ON m.ownerId = q.ownerId AND m.factoryId = q.factoryId AND m.sensorId = q.sensorId
@@ -140,3 +142,70 @@ SELECT * FROM iot_analytics.high_value_alerts
 
 
 -- Send this data to Kafka
+CREATE MATERIALIZED VIEW iot_analytics.high_value_alerts_kafka_table_mv
+TO `service_kafka-for-clickhouse-bench`.high_values_kafka_table
+AS 
+SELECT * FROM iot_analytics.high_value_alerts
+
+DROP VIEW IF EXISTS iot_analytics.high_value_alerts_kafka_table_mv
+
+
+-- create aggregates cahnged table
+CREATE TABLE iot_analytics.measurements_aggregates_per_device_updated
+(
+    ownerId LowCardinality(String),
+    factoryId LowCardinality(String),
+    sensorId String,
+    sensorType Enum ('Temperature' = 1, 'Humidity' = 2, 'Pressure' = 3, 'Vibration' = 4, 'Current' = 5, 'Rotation' = 6),
+    avgValue Float64,
+    quant90 Float64,
+    quant99 Float64,
+    timestamp DateTime64
+)
+ENGINE = MergeTree()
+ORDER BY ("ownerId", "factoryId", "sensorId");
+
+-- Send aggregates data to Kafka
+CREATE MATERIALIZED VIEW iot_analytics.measurements_aggregates_per_device_kafka_table_mv
+TO iot_analytics.measurements_aggregates_per_device_updated
+AS
+SELECT
+    ownerId,
+    factoryId,
+    sensorId,
+    avgMerge(avgValue) AS avgValue,
+    quantileMerge(quant90) AS quant90,
+    quantileMerge(quant99) AS quant99,
+    now() AS timestamp
+FROM iot_analytics.measurements_aggregates_per_device
+GROUP BY
+    ownerId,
+    factoryId,
+    sensorId
+
+-- CREATE MATERIALIZED VIEW TO SEND DATA TO KAFKA
+CREATE MATERIALIZED VIEW iot_analytics.measurements_aggregates_per_device_kafka_table_mv
+TO `service_kafka-for-clickhouse-bench`.iot_aggregates_kafka_table
+AS
+SELECT
+    ownerId,
+    factoryId,
+    sensorId,
+    avgMerge(avgValue) AS avgValue,
+    quantileMerge(quant90) AS quant90,
+    quantileMerge(quant99) AS quant99,
+    now() AS timestamp
+FROM iot_analytics.measurements_aggregates_per_device
+GROUP BY
+    ownerId,
+    factoryId,
+    sensorId
+
+DROP VIEW IF EXISTS iot_analytics.measurements_aggregates_per_device_updated_kafka_table_mv
+
+
+-- send high value alerts to kafka
+CREATE MATERIALIZED VIEW iot_analytics.high_value_alerts_kafka_table_mv
+TO `service_kafka-for-clickhouse-bench`.iot_high_values_kafka_table
+AS
+SELECT * FROM iot_analytics.high_value_alerts

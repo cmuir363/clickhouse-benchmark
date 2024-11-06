@@ -1,7 +1,7 @@
 // ClickHouse service in the same region
 resource "aiven_clickhouse" "clickhouse" {
-  project                 = var.aiven_project
-  cloud_name              = var.cloud_region
+  project                 = var.aiven_project #aiven_project = "cmuir-demo"
+  cloud_name              = var.cloud_region #cloud_region = "aws-eu-central-1"
   plan                    = "startup-16"
   service_name            = "clickhouse-bench"
   maintenance_window_dow  = "sunday"
@@ -49,8 +49,77 @@ resource "aiven_service_integration" "clickhouse_kafka_source" {
         name = aiven_kafka_topic.iot_measurements.topic_name
       }
     }
+
+    tables {
+      name        = "iot_high_values_kafka_table"
+      group_name  = "clickhouse-high-values"
+      data_format = "JSONEachRow"
+      columns {
+        name = "ownerId"
+        type = "LowCardinality(String)"
+      }
+      columns {
+        name = "factoryId"
+        type = "LowCardinality(String)"
+      }
+      columns {
+        name = "sensorId"
+        type = "String"
+      }
+      columns {
+        name = "timestamp"
+        type = "DateTime64"
+      }
+      columns {
+        name = "highValue"
+        type = "Float64"
+      }
+      columns {
+        name = "quant90Value"
+        type = "Float64"
+      }
+      topics {
+        name = aiven_kafka_topic.iot_measurements_high_values.topic_name
+      }
+    }
+
+    tables {
+      name        = "iot_aggregates_kafka_table"
+      group_name  = "clickhouse-aggregates"
+      data_format = "JSONEachRow"
+      columns {
+        name = "ownerId"
+        type = "LowCardinality(String)"
+      }
+      columns {
+        name = "factoryId"
+        type = "LowCardinality(String)"
+      }
+      columns {
+        name = "sensorId"
+        type = "String"
+      }
+      columns {
+        name = "avgValue"
+        type = "Float64"
+      }
+      columns {
+        name = "quant99"
+        type = "Float64"
+      }
+      columns {
+        name = "quant90"
+        type = "Float64"
+      }
+      topics {
+        name = aiven_kafka_topic.iot_aggregates_values.topic_name
+      }
+    }
   }
+      
 }
+
+
 
 # I can create this table manually in clickhouse but the TF throws an error on the Enum type
 #  {

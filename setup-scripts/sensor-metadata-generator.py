@@ -14,13 +14,13 @@ SENSOR_TYPES = ['Temperature', 'Humidity', 'Pressure', 'Vibration', 'Current', '
 def generate_sensors(num_owners, num_factories, sensors_per_factory):
     sensors = []
     for _ in range(num_owners):
-        owner_id = f'owner_{uuid.uuid4()}'  # Generate a unique owner ID (GUID)
+        owner_id = f'owner_{uuid.uuid4()}'
 
         for _ in range(num_factories):
-            factory_id = f'factory_{uuid.uuid4()}'  # Generate a unique factory ID (GUID)
+            factory_id = f'factory_{uuid.uuid4()}'
 
             for _ in range(sensors_per_factory):
-                sensor_id = f'sensor_{uuid.uuid4()}'  # Generate a unique sensor ID
+                sensor_id = f'sensor_{uuid.uuid4()}'
                 sensor_type = random.choice(SENSOR_TYPES)
                 sensors.append([owner_id, factory_id, sensor_id, sensor_type])
 
@@ -29,9 +29,7 @@ def generate_sensors(num_owners, num_factories, sensors_per_factory):
 def write_sensors_to_csv(sensors, output_file):
     with open(output_file, mode='w', newline='') as file:
         writer = csv.writer(file)
-        # Writing the header
         writer.writerow(['ownerId', 'factoryId', 'sensorId', 'sensorType'])
-        # Writing the sensor data
         writer.writerows(sensors)
     print(f"Sensors generated and saved to {output_file}")
 

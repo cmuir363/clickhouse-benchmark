@@ -10,7 +10,7 @@ ORDER BY rowNumber
 PARTITION BY toYYYYMM(timestamp)
 
 -- generate a time series
-INSERT INTO generated_timestamps
+INSERT INTO iot_analytics.generated_timestamps
 SELECT 
     now() - INTERVAL number MILLISECOND AS timestamp,
     rand() % (SELECT count(*) FROM iot_analytics.iot_metadata)
@@ -24,7 +24,7 @@ SETTINGS
 -- 1048576 1 MB
 -- Generate this query which associates each series with a row number. Now do a join with the metadata table to get the sensor type and generate a value based on that and have this as an intermediate table
 
-INSERT INTO iot_analytics.iot_measurements_raw_temp 
+INSERT INTO iot_analytics.iot_measurements_raw_temp
 SELECT 
     ownerId,
     factoryId,

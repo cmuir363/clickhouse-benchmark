@@ -13,7 +13,7 @@ db_password = os.getenv('DB_PASSWORD')
 client = clickhouse_connect.get_client(host=db_host, port=db_port, username=db_username, password=db_password, interface="https")
 
 # create sensor-metadata table
-sensor_metadata_table_query = """CREATE OR REPLACE TABLE iot_analytics.iot_metadata_script
+sensor_metadata_table_query = """CREATE OR REPLACE TABLE iot_analytics.iot_metadata
 (
     "rowNumber" UInt64 CODEC(Delta, ZSTD(1)),
     "ownerId" LowCardinality(String) CODEC(ZSTD(1)),
@@ -27,7 +27,7 @@ ORDER BY ("rowNumber", "ownerId", "factoryId", "sensorId")"""
 client.command(sensor_metadata_table_query)
 
 # create raw sensor table
-raw_sensor_table_query = """CREATE OR REPLACE TABLE iot_analytics.iot_measurements_raw_temp_script
+raw_sensor_table_query = """CREATE OR REPLACE TABLE iot_analytics.iot_measurements_raw
 (
     "ownerId" LowCardinality(String) CODEC(ZSTD(1)),
     "factoryId" LowCardinality(String) CODEC(ZSTD(1)),
@@ -42,7 +42,7 @@ ORDER BY ("ownerId", "factoryId", "sensorId", "timestamp");"""
 client.command(raw_sensor_table_query)
 
 # create timestamps table
-timestamps_table_query = """CREATE OR REPLACE TABLE iot_analytics.generated_timestamps_script
+timestamps_table_query = """CREATE OR REPLACE TABLE iot_analytics.generated_timestamps
 (
     `timestamp` DateTime64,
     `rowNumber` UInt64
