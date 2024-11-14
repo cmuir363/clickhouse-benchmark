@@ -3,3 +3,6 @@ protobuf==5.28.3
 python-dotenv==1.0.1
 google-cloud-storage==2.18.2
 google-auth==2.35.0
+pydantic==2.9.2
+aiven-client==4.4.0
+ipdb==0.13.13

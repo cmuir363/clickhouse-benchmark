@@ -1,5 +1,5 @@
 -- the destination table
-CREATE TABLE iot_analytics.iot_measurements_raw
+CREATE TABLE default.iot_measurements_raw
 (
     "ownerId" LowCardinality(String) CODEC(ZSTD(1)),
     "factoryId" LowCardinality(String) CODEC(ZSTD(1)),
@@ -13,14 +13,14 @@ ORDER BY ("ownerId", "factoryId", "sensorId", "timestamp")
 PARTITION BY toYYYYMM(timestamp);
 
 -- the materialized view to move data from the kafka native table
-CREATE MATERIALIZED VIEW iot_analytics.iot_measurements_raw_mv
-TO iot_analytics.iot_measurements_raw
+CREATE MATERIALIZED VIEW default.iot_measurements_raw_mv
+TO default.iot_measurements_raw
 AS
 SELECT * FROM `service_kafka-gcp-eu`.iot_measurements_kafka_table
 
 
 -- MV to calculate the avg, quat90 and quant99 of each sensor
-CREATE TABLE iot_analytics.measurements_aggregates_per_device
+CREATE TABLE default.measurements_aggregates_per_device
 (
     ownerId LowCardinality(String),
     factoryId LowCardinality(String),
@@ -34,8 +34,8 @@ ENGINE = AggregatingMergeTree()
 ORDER BY ("ownerId", "factoryId", "sensorId");
 
 -- MV
-CREATE MATERIALIZED VIEW iot_analytics.measurements_aggregates_per_device_mv
-TO iot_analytics.measurements_aggregates_per_device
+CREATE MATERIALIZED VIEW default.measurements_aggregates_per_device_mv
+TO default.measurements_aggregates_per_device
 AS
 SELECT
     ownerId,
@@ -44,16 +44,16 @@ SELECT
     avgState(value) as avgValue,
     quantileState(0.9)(value) as quant90,
     quantileState(0.99)(value) as quant99
-FROM iot_analytics.iot_measurements_raw
+FROM default.iot_measurements_raw
 GROUP BY ownerId, factoryId, sensorId
 
 
--- Read the raw data 
-SELECT * FROM iot_analytics.iot_measurements_raw LIMIT 10
+-- Read the raw data
+SELECT * FROM default.iot_measurements_raw LIMIT 10
 
 -- Read the data
 SELECT ownerId, factoryId, sensorId, avgMerge(avgValue) as avgValue, quantileMerge(quant90) as quant90, quantileMerge(quant99) as quant99
-FROM iot_analytics.measurements_aggregates_per_device
+FROM default.measurements_aggregates_per_device
 GROUP BY ownerId, factoryId, sensorId
 LIMIT 10
 
@@ -75,12 +75,12 @@ ORDER BY ("ownerId", "factoryId", "sensorId");
 CREATE MATERIALIZED VIEW num_measurements_per_sensor_mv
 TO num_measurements_per_sensor
 AS
-SELECT 
+SELECT
     ownerId,
     factoryId,
     sensorId,
     countState() as numMeasurements
-FROM iot_analytics.iot_measurements_raw
+FROM default.iot_measurements_raw
 GROUP BY ownerId, factoryId, sensorId
 
 -- Read the data
@@ -93,7 +93,7 @@ LIMIT 10
 
 -- Create a MV that will compare the latest value with the quant 90 value and send to a new table if it is higher
 
-CREATE OR REPLACE TABLE iot_analytics.high_value_alerts
+CREATE OR REPLACE TABLE default.high_value_alerts
 (
     ownerId LowCardinality(String),
     factoryId LowCardinality(String),
@@ -107,7 +107,7 @@ ORDER BY ("ownerId", "factoryId", "sensorId");
 
 -- Create the dictionary to hold the quant values
 
-CREATE OR REPLACE DICTIONARY iot_analytics.quantile_dict
+CREATE OR REPLACE DICTIONARY default.quantile_dict
 (
     ownerId String,
     factoryId String,
@@ -115,15 +115,15 @@ CREATE OR REPLACE DICTIONARY iot_analytics.quantile_dict
     avgValue Float64,
     quant90Value Float64
 ) PRIMARY KEY ownerId, factoryId, sensorId
-SOURCE(CLICKHOUSE(QUERY 'SELECT ownerId, factoryId, sensorId, avgMerge(avgValue) as avgValue, quantileMerge(quant90) as quant90Value FROM iot_analytics.measurements_aggregates_per_device GROUP BY ownerId, factoryId, sensorId'))
+SOURCE(CLICKHOUSE(QUERY 'SELECT ownerId, factoryId, sensorId, avgMerge(avgValue) as avgValue, quantileMerge(quant90) as quant90Value FROM default.measurements_aggregates_per_device GROUP BY ownerId, factoryId, sensorId'))
 LAYOUT(HASHED())
 LIFETIME(60)
 
 
 
 -- Create the MV
-CREATE MATERIALIZED VIEW iot_analytics.high_value_alerts_mv
-TO iot_analytics.high_value_alerts
+CREATE MATERIALIZED VIEW default.high_value_alerts_mv
+TO default.high_value_alerts
 AS
 SELECT
     m.ownerId,
@@ -132,26 +132,26 @@ SELECT
     m.value as highValue,
     q.quant90Value,
     m.timestamp
-FROM iot_analytics.iot_measurements_raw AS m
-ANY LEFT JOIN iot_analytics.quantile_dict AS q
+FROM default.iot_measurements_raw AS m
+ANY LEFT JOIN default.quantile_dict AS q
 ON m.ownerId = q.ownerId AND m.factoryId = q.factoryId AND m.sensorId = q.sensorId
 WHERE highValue > q.quant90Value
 
 -- Read the data
-SELECT * FROM iot_analytics.high_value_alerts
+SELECT * FROM default.high_value_alerts
 
 
 -- Send this data to Kafka
-CREATE MATERIALIZED VIEW iot_analytics.high_value_alerts_kafka_table_mv
+CREATE MATERIALIZED VIEW default.high_value_alerts_kafka_table_mv
 TO `service_kafka-for-clickhouse-bench`.high_values_kafka_table
-AS 
-SELECT * FROM iot_analytics.high_value_alerts
+AS
+SELECT * FROM default.high_value_alerts
 
-DROP VIEW IF EXISTS iot_analytics.high_value_alerts_kafka_table_mv
+DROP VIEW IF EXISTS default.high_value_alerts_kafka_table_mv
 
 
 -- create aggregates cahnged table
-CREATE TABLE iot_analytics.measurements_aggregates_per_device_updated
+CREATE TABLE default.measurements_aggregates_per_device_updated
 (
     ownerId LowCardinality(String),
     factoryId LowCardinality(String),
@@ -166,8 +166,8 @@ ENGINE = MergeTree()
 ORDER BY ("ownerId", "factoryId", "sensorId");
 
 -- Send aggregates data to Kafka
-CREATE MATERIALIZED VIEW iot_analytics.measurements_aggregates_per_device_kafka_table_mv
-TO iot_analytics.measurements_aggregates_per_device_updated
+CREATE MATERIALIZED VIEW default.measurements_aggregates_per_device_kafka_table_mv
+TO default.measurements_aggregates_per_device_updated
 AS
 SELECT
     ownerId,
@@ -177,14 +177,14 @@ SELECT
     quantileMerge(quant90) AS quant90,
     quantileMerge(quant99) AS quant99,
     now() AS timestamp
-FROM iot_analytics.measurements_aggregates_per_device
+FROM default.measurements_aggregates_per_device
 GROUP BY
     ownerId,
     factoryId,
     sensorId
 
 -- CREATE MATERIALIZED VIEW TO SEND DATA TO KAFKA
-CREATE MATERIALIZED VIEW iot_analytics.measurements_aggregates_per_device_kafka_table_mv
+CREATE MATERIALIZED VIEW default.measurements_aggregates_per_device_kafka_table_mv
 TO `service_kafka-for-clickhouse-bench`.iot_aggregates_kafka_table
 AS
 SELECT
@@ -195,17 +195,17 @@ SELECT
     quantileMerge(quant90) AS quant90,
     quantileMerge(quant99) AS quant99,
     now() AS timestamp
-FROM iot_analytics.measurements_aggregates_per_device
+FROM default.measurements_aggregates_per_device
 GROUP BY
     ownerId,
     factoryId,
     sensorId
 
-DROP VIEW IF EXISTS iot_analytics.measurements_aggregates_per_device_updated_kafka_table_mv
+DROP VIEW IF EXISTS default.measurements_aggregates_per_device_updated_kafka_table_mv
 
 
 -- send high value alerts to kafka
-CREATE MATERIALIZED VIEW iot_analytics.high_value_alerts_kafka_table_mv
+CREATE MATERIALIZED VIEW default.high_value_alerts_kafka_table_mv
 TO `service_kafka-for-clickhouse-bench`.iot_high_values_kafka_table
 AS
-SELECT * FROM iot_analytics.high_value_alerts
+SELECT * FROM default.high_value_alerts

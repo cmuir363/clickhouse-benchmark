@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE iot_analytics.iot_metadata
+CREATE OR REPLACE TABLE default.iot_metadata
 (
     "rowNumber" UInt64 CODEC(Delta, ZSTD(1)),
     "ownerId" LowCardinality(String) CODEC(ZSTD(1)),
@@ -7,9 +7,9 @@ CREATE OR REPLACE TABLE iot_analytics.iot_metadata
     "sensorType" Enum ('Temperature' = 1, 'Humidity' = 2, 'Pressure' = 3, 'Vibration' = 4, 'Current' = 5, 'Rotation' = 6) CODEC(ZSTD(1))
 )
 ENGINE = MergeTree()
-ORDER BY ("rowNumber", "ownerId", "factoryId", "sensorId")  
+ORDER BY ("rowNumber", "ownerId", "factoryId", "sensorId")
 
-CREATE OR REPLACE TABLE iot_analytics.iot_measurements_raw_temp
+CREATE OR REPLACE TABLE default.iot_measurements_raw_temp
 (
     "ownerId" LowCardinality(String) CODEC(ZSTD(1)),
     "factoryId" LowCardinality(String) CODEC(ZSTD(1)),
