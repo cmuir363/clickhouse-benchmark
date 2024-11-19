@@ -2,8 +2,7 @@ import logging
 import re
 from pathlib import Path
 
-from clickhouse_connect.driver.client import Client
-
+from clickhouse_benchmark.client import ClickHouseClient
 from clickhouse_benchmark.config import Config
 from clickhouse_benchmark.results import BenchmarkResult, get_query_result
 from clickhouse_benchmark.service_matrix import Service
@@ -35,25 +34,21 @@ def load_query_file(file_path: Path) -> list[str]:
     return text.strip(";\n").split(";")
 
 
-def run_query_hot(client: Client, query: str, count: int) -> list[str]:
-    LOG.info("Running hot queries")
+def run_query_hot(client: ClickHouseClient, query: str, count: int) -> list[str]:
+    query = query.rstrip("\nFORMAT Null") + "\nFORMAT Null"
     result = []
     # warm caches
-    client.query(query, parameters={"format": "Null"})
+    client.execute(query)
     for _ in range(count):
-        LOG.info("Running hot query: %s", query)
-        resp = client.query(query, parameters={"format": "Null"})
-        result.append(resp.query_id)
+        res = client.execute(query)
+        result.append(res.query_id)
     return result
 
 
-def run_query_cold(client: Client, query: str, count: int) -> list[str]:
-    LOG.info("Running cold queries")
+def run_query_cold(client: ClickHouseClient, query: str, count: int) -> list[str]:
+    query = query.rstrip("\nFORMAT Null") + "\nFORMAT Null"
     result = []
     for _ in range(count):
-        LOG.info("Running cold query: %s", query)
-        resp = client.query(
-            query, parameters={"format": "Null", "min_bytes_to_use_direct_io": 1}
-        )
-        result.append(resp.query_id)
+        res = client.execute(query, settings={"min_bytes_to_use_direct_io": 1})
+        result.append(res.query_id)
     return result

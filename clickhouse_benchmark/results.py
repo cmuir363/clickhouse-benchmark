@@ -2,8 +2,9 @@ import csv
 from collections.abc import Iterable
 from pathlib import Path
 
-from clickhouse_connect.driver.client import Client
 from pydantic import BaseModel
+
+from clickhouse_benchmark.client import ClickHouseClient
 
 QUANTILES = [0.5, 0.9]
 
@@ -30,8 +31,9 @@ class BenchmarkResult(BaseModel):
 
 
 def get_query_result(
-    client: Client, query: str, hot_ids: list[str], cold_ids: list[str]
+    client: ClickHouseClient, query: str, hot_ids: list[str], cold_ids: list[str]
 ) -> QueryResult:
+    client.execute_all_nodes("SYSTEM FLUSH LOGS")
     return QueryResult(
         query=query,
         hot=get_query_statistics(client, hot_ids),
@@ -39,7 +41,9 @@ def get_query_result(
     )
 
 
-def get_query_statistics(client: Client, query_ids: list[str]) -> QueryStatistics:
+def get_query_statistics(
+    client: ClickHouseClient, query_ids: list[str]
+) -> QueryStatistics:
     quantiles_str = ", ".join(str(q) for q in QUANTILES)
     query = f"""
     SELECT
@@ -51,13 +55,13 @@ def get_query_statistics(client: Client, query_ids: list[str]) -> QueryStatistic
         quantilesIf({quantiles_str})(memory_usage, type = 'QueryFinish') as memory_usage,
         quantilesIf({quantiles_str})(query_duration_ms, type = 'QueryFinish') as query_duration_ms
     FROM
-        system.query_log
+        clusterAllReplicas('default', system.query_log)
     WHERE
         (type = 'QueryFinish' OR type = 'ExceptionWhileProcessing')
         AND query_id IN {query_ids}
     """
-    resp = client.query(query)
-    return QueryStatistics(**dict(zip(resp.column_names, resp.result_rows[0])))
+    resp = client.execute_json(query)
+    return QueryStatistics(**resp.results[0])
 
 
 def write_results_to_csv(results: Iterable[BenchmarkResult], file_path: Path) -> None:
@@ -80,6 +84,7 @@ def write_results_to_csv(results: Iterable[BenchmarkResult], file_path: Path) ->
             ]
         )
         for result in results:
+            LOG.info("Writing results for %s", result.plan)
             for query_result in result.results:
                 writer.writerow(
                     [

@@ -2,15 +2,15 @@ import dataclasses
 import json
 import logging
 import os
+import socket
 from collections.abc import Iterator
 from contextlib import contextmanager
 from time import sleep, time
 from typing import Self
 
 from aiven.client.client import AivenClient, Error
-from clickhouse_connect import get_client
-from clickhouse_connect.driver.client import Client
 
+from clickhouse_benchmark.client import ClickHouseClient
 from clickhouse_benchmark.config import Config
 
 LOG = logging.getLogger(__name__)
@@ -20,27 +20,23 @@ LOG = logging.getLogger(__name__)
 class Service:
     service_name: str
     plan: str
-    client: Client
+    client: ClickHouseClient
 
     @classmethod
     def from_running_service(cls, service: dict) -> Self:
         port = next(
-            c["port"]
-            for c in service["components"]
-            if c["component"] == "clickhouse_https"
+            c["port"] for c in service["components"] if c["component"] == "clickhouse"
         )
         return cls(
             service_name=service["service_name"],
             plan=service["plan"],
-            client=get_client(
+            client=ClickHouseClient(
                 host=service["service_uri_params"]["host"],
                 port=port,
                 user=service["service_uri_params"]["user"],
                 password=service["service_uri_params"]["password"],
                 database=service["service_uri_params"]["dbname"],
-                interface="https",
-                connect_timeout=60 * 5,
-                send_receive_timeout=60 * 5,
+                secure=True,
             ),
         )
 
@@ -61,9 +57,13 @@ def create_aiven_client() -> AivenClient:
 def create_services(client: AivenClient, config: Config) -> Iterator[Iterator[Service]]:
     service_names = []
     try:
-        for plan in config.plans:
-            LOG.info("Creating service %s", plan)
-            service_names.append(get_or_create_service(client, plan, config))
+        if config.recreate_services:
+            terminate_services(client, config.plans, config.project)
+            for plan in config.plans:
+                service_names.append(create_service(client, plan, config))
+        else:
+            for plan in config.plans:
+                service_names.append(get_or_create_service(client, plan, config))
         yield map(
             Service.from_running_service,
             wait_for_services_to_become_running(client, service_names, config.project),
@@ -80,18 +80,23 @@ def get_or_create_service(client: AivenClient, plan: str, config: Config) -> str
     except Error as e:
         if e.status != 404:
             raise e from e
-        LOG.info("Creating service %s", plan)
-        return client.create_service(
-            cloud=config.cloud,
-            service_type="clickhouse",
-            plan=plan,
-            project=config.project,
-            service=plan,
-        )["service_name"]
+
+        return create_service(client, plan, config)
+
+
+def create_service(client: AivenClient, plan: str, config: Config) -> str:
+    LOG.info("Creating service %s", plan)
+    return client.create_service(
+        cloud=config.cloud,
+        service_type="clickhouse",
+        plan=plan,
+        project=config.project,
+        service=plan,
+    )["service_name"]
 
 
 def wait_for_services_to_become_running(
-    client: AivenClient, service_names: list[str], project: str, timeout: float = 600.0
+    client: AivenClient, service_names: list[str], project: str, timeout: float = 300.0
 ) -> Iterator[dict]:
     start_time = time()
     while time() - start_time < timeout:
@@ -99,8 +104,12 @@ def wait_for_services_to_become_running(
         for service_name in service_names:
             service = client.get_service(project, service_name)
             if service["state"] == "RUNNING":
-                LOG.info("Service %s is running", service_name)
-                yield service
+                if ping(service["service_uri"]):
+                    LOG.info("Service %s is reachable", service_name)
+                    yield service
+                else:
+                    remaining_services.append(service_name)
+                    LOG.info("Service %s is not reachable", service_name)
             else:
                 remaining_services.append(service_name)
                 LOG.info("Service %s is %s", service_name, service["state"])
@@ -108,6 +117,16 @@ def wait_for_services_to_become_running(
         if not service_names:
             return
         sleep(5)
+    LOG.warning("Timeout waiting for services to become running: %s", service_names)
+
+
+def ping(uri: str) -> bool:
+    host, port = uri.split(":")
+    try:
+        with socket.create_connection((host, int(port)), timeout=5):
+            return True
+    except OSError:
+        return False
 
 
 def terminate_services(

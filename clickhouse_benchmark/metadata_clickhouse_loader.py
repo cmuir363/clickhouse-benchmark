@@ -2,16 +2,23 @@ import csv
 import logging
 import os
 import threading
+from pathlib import Path
 
-from clickhouse_connect.driver.client import Client
 from google.auth.credentials import AnonymousCredentials
 from google.cloud import storage
 
+from clickhouse_benchmark.client import ClickHouseClient
+
 LOG = logging.getLogger(__name__)
 
+LOCK_DOWNLOAD_FILE = threading.Lock()
 
-def generate_metadata(client: Client) -> None:
-    LOG.info("Generating metadata for %s", client.uri)
+# We can saturate bandwidth more with multiple threads here
+LOCK_UPLOAD_FILE = threading.Semaphore(3)
+
+
+def generate_metadata(client: ClickHouseClient) -> None:
+    LOG.info("Generating metadata for %s", client.host)
 
     def map_sensor_type(sensor_type):
         sensor_type_mapping = {
@@ -24,53 +31,62 @@ def generate_metadata(client: Client) -> None:
         }
         return sensor_type_mapping.get(sensor_type, None)
 
-    def check_if_sensors_metadata_file_exists():
-        return os.path.isfile("sensors.csv")
-
     def retrieve_sensors_metadata_file():
-        # need to set a dumm project and use anon creds to donwload a public file
-        storage_client = storage.Client(
-            credentials=AnonymousCredentials(), project="dummy-project"
-        )
-        bucket = storage_client.bucket("cmuir-clickhouse-demo")
-        sensors_file = bucket.blob("sensors.csv")
-        sensors_file.download_to_filename("sensors.csv")
+        if Path("sensors.csv").exists():
+            return
+        if not Path("sensors_prev.csv").exists():
+            # need to set a dumm project and use anon creds to donwload a public file
+            storage_client = storage.Client(
+                credentials=AnonymousCredentials(), project="dummy-project"
+            )
+            bucket = storage_client.bucket("cmuir-clickhouse-demo")
+            sensors_file = bucket.blob("sensors.csv")
+            sensors_file.download_to_filename("sensors_prev.csv")
+        with open("sensors_prev.csv", "r") as in_, open(
+            "sensors.csv", "w", newline=""
+        ) as out:
+            reader = csv.DictReader(in_)
+            writer = csv.DictWriter(
+                out,
+                fieldnames=[
+                    "rowNumber",
+                    "ownerId",
+                    "factoryId",
+                    "sensorId",
+                    "sensorType",
+                ],
+            )
+            writer.writeheader()
+            try:
+                for i, row in enumerate(reader):
+                    sensor_type_enum = map_sensor_type(row["sensorType"])
+                    if sensor_type_enum is not None:
+                        writer.writerow(
+                            {
+                                "rowNumber": i,
+                                "ownerId": row["ownerId"],
+                                "factoryId": row["factoryId"],
+                                "sensorId": row["sensorId"],
+                                "sensorType": sensor_type_enum,
+                            }
+                        )
+            except RuntimeError:
+                os.remove("sensors.csv")
 
     truncate_query = "TRUNCATE TABLE default.iot_metadata"
-    client.command(truncate_query)
+    client.execute(truncate_query)
 
-    insert_query = """
-    INSERT INTO default.iot_metadata (rowNumber, ownerId, factoryId, sensorId, sensorType)
-    VALUES
-    """
-    with threading.Lock():
-        if not check_if_sensors_metadata_file_exists():
-            print(
-                "Sensors metadata file does not exist. Retrieving sensors metadata file from GCS."
-            )
-            retrieve_sensors_metadata_file()
-        else:
-            print("Sensors metadata file already exists.")
+    with LOCK_DOWNLOAD_FILE:
+        retrieve_sensors_metadata_file()
 
-    with open("sensors.csv", mode="r") as file:
-        reader = csv.DictReader(file)
+    with LOCK_UPLOAD_FILE:
+        insert_query = """
+        INSERT INTO default.iot_metadata (rowNumber, ownerId, factoryId, sensorId, sensorType)
+        SELECT *
+        FROM input()
+        FORMAT CSVWithNames
+        """
 
-        rows = []
-        i = 0
-        for row in reader:
-            # Map the sensorType to the ENUM values
-            sensor_type_enum = map_sensor_type(row["sensorType"])
-            if sensor_type_enum is None:
-                continue
-
-            rows.append(
-                f"('{i}', '{row['ownerId']}', '{row['factoryId']}', '{row['sensorId']}', {sensor_type_enum})"
-            )
-            i += 1
-
-        if rows:
-            final_query = insert_query + ",".join(rows)
-
-    print("Inserting sensors metadata into ClickHouse.")
-    client.command(final_query)
-    print("CSV data loaded into ClickHouse successfully.")
+        print("Inserting sensors metadata into ClickHouse.")
+        client.execute(insert_query, input=Path("sensors.csv"))
+        print("CSV data loaded into ClickHouse successfully.")

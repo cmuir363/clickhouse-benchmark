@@ -1,12 +1,12 @@
 import logging
 
-from clickhouse_connect.driver.client import Client
+from clickhouse_benchmark.client import ClickHouseClient
 
 LOG = logging.getLogger(__name__)
 
 
-def create_tables(client: Client) -> None:
-    LOG.info("Creating tables for %s", client.uri)
+def create_tables(client: ClickHouseClient) -> None:
+    LOG.info("Creating tables for %s", client.host)
     # create sensor-metadata table
     sensor_metadata_table_query = """CREATE OR REPLACE TABLE default.iot_metadata
     (
@@ -19,7 +19,7 @@ def create_tables(client: Client) -> None:
     ENGINE = MergeTree()
     ORDER BY ("rowNumber", "ownerId", "factoryId", "sensorId")"""
 
-    client.command(sensor_metadata_table_query)
+    client.execute(sensor_metadata_table_query)
 
     # create raw sensor table
     raw_sensor_table_query = """CREATE OR REPLACE TABLE default.iot_measurements_raw
@@ -34,7 +34,7 @@ def create_tables(client: Client) -> None:
     ENGINE = MergeTree()
     ORDER BY ("ownerId", "factoryId", "sensorId", "timestamp");"""
 
-    client.command(raw_sensor_table_query)
+    client.execute(raw_sensor_table_query)
 
     # create timestamps table
     timestamps_table_query = """CREATE OR REPLACE TABLE default.generated_timestamps
@@ -46,5 +46,5 @@ def create_tables(client: Client) -> None:
     ORDER BY rowNumber
     PARTITION BY toYYYYMM(timestamp)"""
 
-    resp = client.command(timestamps_table_query)
+    resp = client.execute(timestamps_table_query)
     print(resp)

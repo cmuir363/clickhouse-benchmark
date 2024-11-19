@@ -13,6 +13,8 @@ from clickhouse_benchmark.service_matrix import (
     create_services,
 )
 
+LOG = logging.getLogger(__name__)
+
 
 def main() -> None:
     logging.basicConfig(
@@ -29,16 +31,27 @@ def main() -> None:
                     executor.submit(run_benchmark, service, config)
                 )
             write_results_to_csv(
-                (f.result() for f in futures.as_completed(benchmark_result_futures)),
+                (
+                    f.result()  # type: ignore
+                    for f in futures.as_completed(benchmark_result_futures)
+                    if f is not None
+                ),
                 config.output_file,
             )
+    LOG.info("Benchmark finished")
 
 
-def run_benchmark(service: Service, config: Config) -> BenchmarkResult:
-    create_tables(service.client)
-    generate_metadata(service.client)
-    generate_data(service.client, config.num_rows_in_dataset)
-    return run_selects(service, config)
+def run_benchmark(service: Service, config: Config) -> BenchmarkResult | None:
+    try:
+        create_tables(service.client)
+        generate_metadata(service.client)
+        generate_data(service.client, config.num_rows_in_dataset)
+        return run_selects(service, config)
+    except RuntimeError as e:
+        logging.error(
+            f"Error running benchmark for {service.plan}.  Benchmark failed.  Error: {e}"
+        )
+        return None
 
 
 if __name__ == "__main__":
