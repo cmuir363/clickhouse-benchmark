@@ -43,9 +43,9 @@ class Service:
 
 def create_aiven_client() -> AivenClient:
     url = os.getenv("AIVEN_WEB_URL")
-    assert url
     creds_file = os.getenv("AIVEN_CREDENTIALS_FILE")
-    assert creds_file
+    if not url or not creds_file:
+        raise RuntimeError("AIVEN_WEB_URL and AIVEN_CREDENTIALS_FILE must be set")
     with open(creds_file, "r") as file:
         auth_token = json.load(file)["auth_token"]
     client = AivenClient(base_url=url)

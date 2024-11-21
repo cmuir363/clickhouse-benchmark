@@ -38,7 +38,7 @@ class ClickHouseClient:
         input: Path | None = None,
         host: str | None = None,
     ) -> Result:
-        LOG.info("Running query: %s", query[:500] + "...")
+        LOG.info("Running query: %s", query)
         if not host:
             host = self.host
         query_id = str(uuid4())
@@ -102,8 +102,17 @@ class ClickHouseClient:
         input: Path | None = None,
     ) -> list[Result]:
         res = []
-        for host in self.hosts():
-            res.append(self.execute(query, settings, input, host))
+        import concurrent.futures
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [
+                executor.submit(self.execute, query, settings, input, host)
+                for host in self.hosts()
+            ]
+            for future in concurrent.futures.as_completed(futures):
+                if exception := future.exception():
+                    raise exception
+                res.append(future.result())
         return res
 
     def hosts(self) -> list[str]:

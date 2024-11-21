@@ -1,4 +1,5 @@
 import csv
+import logging
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -7,6 +8,8 @@ from pydantic import BaseModel
 from clickhouse_benchmark.client import ClickHouseClient
 
 QUANTILES = [0.5, 0.9]
+
+LOG = logging.getLogger(__name__)
 
 
 class QueryStatistics(BaseModel):

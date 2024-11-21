@@ -1,12 +1,12 @@
 import logging
+from collections.abc import Iterator
 from concurrent import futures
 
 from clickhouse_benchmark.benchmark import run_selects
+from clickhouse_benchmark.clickbench import setup as clickbench_setup
 from clickhouse_benchmark.config import Config
-from clickhouse_benchmark.generate_historical_data import generate_data
-from clickhouse_benchmark.generate_tables import create_tables
-from clickhouse_benchmark.metadata_clickhouse_loader import generate_metadata
 from clickhouse_benchmark.results import BenchmarkResult, write_results_to_csv
+from clickhouse_benchmark.sensor_data import setup as sensor_data_setup
 from clickhouse_benchmark.service_matrix import (
     Service,
     create_aiven_client,
@@ -14,6 +14,7 @@ from clickhouse_benchmark.service_matrix import (
 )
 
 LOG = logging.getLogger(__name__)
+MAX_CONCURRENT_BENCHMARKS = 10
 
 
 def main() -> None:
@@ -24,34 +25,38 @@ def main() -> None:
     config = Config()
     client = create_aiven_client()
     with create_services(client, config) as services:
-        with futures.ThreadPoolExecutor(max_workers=10) as executor:
-            benchmark_result_futures = []
+        with futures.ThreadPoolExecutor(
+            max_workers=MAX_CONCURRENT_BENCHMARKS
+        ) as executor:
+            benchmark_result_futures: list[futures.Future[BenchmarkResult | None]] = []
             for service in services:
                 benchmark_result_futures.append(
                     executor.submit(run_benchmark, service, config)
                 )
             write_results_to_csv(
-                (
-                    f.result()  # type: ignore
-                    for f in futures.as_completed(benchmark_result_futures)
-                    if f is not None
-                ),
+                iterate_result_futures(benchmark_result_futures),
                 config.output_file,
             )
     LOG.info("Benchmark finished")
 
 
+def iterate_result_futures(
+    benchmark_result_futures: list[futures.Future[BenchmarkResult | None]],
+) -> Iterator[BenchmarkResult]:
+    for f in futures.as_completed(benchmark_result_futures):
+        if exception := f.exception():
+            LOG.error("Error running benchmark", exc_info=exception)
+        else:
+            if result := f.result():
+                yield result
+
+
 def run_benchmark(service: Service, config: Config) -> BenchmarkResult | None:
-    try:
-        create_tables(service.client)
-        generate_metadata(service.client)
-        generate_data(service.client, config.num_rows_in_dataset)
-        return run_selects(service, config)
-    except RuntimeError as e:
-        logging.error(
-            f"Error running benchmark for {service.plan}.  Benchmark failed.  Error: {e}"
-        )
-        return None
+    if config.test == "clickbench":
+        clickbench_setup(service, config)
+    elif config.test == "sensor_data":
+        sensor_data_setup(service, config)
+    return run_selects(service, config)
 
 
 if __name__ == "__main__":
