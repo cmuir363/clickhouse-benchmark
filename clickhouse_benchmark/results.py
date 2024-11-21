@@ -77,13 +77,13 @@ def write_results_to_csv(results: Iterable[BenchmarkResult], file_path: Path) ->
                 "hot_total_queries",
                 "hot_succeeded",
                 "hot_failed",
-                *["hot_query_duration_" + str(q) for q in QUANTILES],
-                *["hot_memory_usage_" + str(q) for q in QUANTILES],
+                *["hot_query_duration_ms_" + str(q) for q in QUANTILES],
+                *["hot_memory_usage_ms_" + str(q) for q in QUANTILES],
                 "cold_total_queries",
                 "cold_succeeded",
                 "cold_failed",
-                *["cold_query_duration_" + str(q) for q in QUANTILES],
-                *["cold_memory_usage_" + str(q) for q in QUANTILES],
+                *["cold_query_duration_ms_" + str(q) for q in QUANTILES],
+                *["cold_memory_usage_ms_" + str(q) for q in QUANTILES],
             ]
         )
         for result in results:
@@ -92,7 +92,7 @@ def write_results_to_csv(results: Iterable[BenchmarkResult], file_path: Path) ->
                 writer.writerow(
                     [
                         result.plan,
-                        query_result.query,
+                        query_result.query.strip(),
                         query_result.hot.total_queries,
                         query_result.hot.succeeded,
                         query_result.hot.failed,
