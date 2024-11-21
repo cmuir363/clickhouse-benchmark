@@ -10,20 +10,20 @@ def generate_data(client: ClickHouseClient, num_rows_in_dataset: int) -> None:
     LOG.info("Generating historical data for %s", client.host)
     # get the max number of threads
     max_threads_query = "SELECT value FROM system.settings WHERE name = 'max_threads'"
-    max_threads: int = client.execute_json(max_threads_query).results[0]["value"]
+    max_threads: int = client.execute(max_threads_query).results[0]["value"]
 
     num_timestamps = int(num_rows_in_dataset)
     interval_step = 10000000
     # insert the timestamps
 
     truncate_timestamps_query = "TRUNCATE TABLE default.generated_timestamps"
-    client.execute(truncate_timestamps_query)
+    client.execute_no_result(truncate_timestamps_query)
 
     insert_timestamps(client, num_timestamps, interval_step, max_threads)
 
     # deleting existing timestamps
     truncate_sensor_data_query = "TRUNCATE TABLE default.iot_measurements_raw"
-    client.execute(truncate_sensor_data_query)
+    client.execute_no_result(truncate_sensor_data_query)
 
     print("Generating the raw sensor data")
 
@@ -33,7 +33,7 @@ def generate_data(client: ClickHouseClient, num_rows_in_dataset: int) -> None:
 
 
 def insert_timestamps_subset_query(
-    client: ClickHouseClient, min_number, max_number, max_threads
+    client: ClickHouseClient, min_number: int, max_number: int, max_threads: int
 ) -> None:
     insert_timestamps_query = f"""INSERT INTO default.generated_timestamps
     WITH total_count AS (SELECT count(*) AS total_metadata_count FROM default.iot_metadata)
@@ -47,13 +47,12 @@ def insert_timestamps_subset_query(
         min_insert_block_size_bytes = 2048576000,
         max_threads = {max_threads},
         max_insert_threads = {max_threads};"""
-    generate_timestamps_result = client.execute(insert_timestamps_query)
-    generate_timestamps_query_id = generate_timestamps_result.query_id
+    generate_timestamps_query_id = client.execute_no_result(insert_timestamps_query)
     print(f"Generate timestamps query id: {generate_timestamps_query_id}")
 
 
 def insert_timestamps(
-    client: ClickHouseClient, num_timestamps, interval_step, max_threads
+    client: ClickHouseClient, num_timestamps: int, interval_step: int, max_threads: int
 ) -> None:
     for i in range(0, num_timestamps, interval_step):
         print(f"Inserting timestamps from {i} to {i + interval_step}")
@@ -64,13 +63,13 @@ def insert_timestamps(
             f"Inserted timestamps from {i} to {i + interval_step} in {(timestamp_after - timestamp_before).total_seconds()} "
         )
         count_query = "SELECT count(*) FROM default.generated_timestamps"
-        count = client.execute_json(count_query).results[0]["count()"]
+        count = client.execute(count_query).results[0]["count()"]
         print(f"Total number of timestamps inserted: {count}")
 
 
 # Generate the raw sensor data
 def insert_subset_sensor_data(
-    client: ClickHouseClient, min_number, max_number, max_threads
+    client: ClickHouseClient, min_number: int, max_number: int, max_threads: int
 ) -> None:
     insert_sensor_data_query = f"""INSERT INTO default.iot_measurements_raw
     WITH rows_to_insert AS (SELECT * FROM default.generated_timestamps WHERE rowNumber BETWEEN {min_number} AND {max_number - 1})
@@ -97,13 +96,15 @@ def insert_subset_sensor_data(
         max_threads = {max_threads},
         max_insert_threads = {max_threads};"""
 
-    generate_sensor_data_result = client.execute(insert_sensor_data_query)
-    generate_sensor_data_query_id = generate_sensor_data_result.query_id
+    generate_sensor_data_query_id = client.execute_no_result(insert_sensor_data_query)
     print(f"Generate sensor data query id: {generate_sensor_data_query_id}")
 
 
 def insert_sensor_data(
-    client: ClickHouseClient, sensor_data_count, interval_step, max_threads
+    client: ClickHouseClient,
+    sensor_data_count: int,
+    interval_step: int,
+    max_threads: int,
 ) -> None:
     for i in range(0, sensor_data_count, interval_step):
         print(f"Inserting sensor data from {i} to {i + interval_step}")
@@ -114,12 +115,12 @@ def insert_sensor_data(
             f"Inserted sensor data from {i} to {i + interval_step} in {(timestamp_after - timestamp_before).total_seconds()} "
         )
         count_query = "SELECT count(*) FROM default.iot_measurements_raw"
-        count = client.execute_json(count_query).results[0]["count()"]
+        count = client.execute(count_query).results[0]["count()"]
         print(f"Total number of sensor data inserted: {count}")
 
 
 def get_sensor_data_count(client: ClickHouseClient) -> int:
     count_query = "SELECT count(*) FROM default.iot_metadata"
-    count = client.execute_json(count_query).results[0]["count()"]
+    count = client.execute(count_query).results[0]["count()"]
     print(f"Total number of sensor data to be inserted: {count}")
     return int(count)

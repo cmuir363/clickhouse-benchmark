@@ -19,7 +19,7 @@ def create_tables(client: ClickHouseClient) -> None:
     ENGINE = MergeTree()
     ORDER BY ("rowNumber", "ownerId", "factoryId", "sensorId")"""
 
-    client.execute(sensor_metadata_table_query)
+    client.execute_no_result(sensor_metadata_table_query)
 
     # create raw sensor table
     raw_sensor_table_query = """CREATE OR REPLACE TABLE default.iot_measurements_raw
@@ -34,7 +34,7 @@ def create_tables(client: ClickHouseClient) -> None:
     ENGINE = MergeTree()
     ORDER BY ("ownerId", "factoryId", "sensorId", "timestamp");"""
 
-    client.execute(raw_sensor_table_query)
+    client.execute_no_result(raw_sensor_table_query)
 
     # create timestamps table
     timestamps_table_query = """CREATE OR REPLACE TABLE default.generated_timestamps
@@ -46,5 +46,5 @@ def create_tables(client: ClickHouseClient) -> None:
     ORDER BY rowNumber
     PARTITION BY toYYYYMM(timestamp)"""
 
-    resp = client.execute(timestamps_table_query)
+    resp = client.execute_no_result(timestamps_table_query)
     print(resp)

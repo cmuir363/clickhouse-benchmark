@@ -35,20 +35,20 @@ def load_query_file(file_path: Path) -> list[str]:
 
 
 def run_query_hot(client: ClickHouseClient, query: str, count: int) -> list[str]:
-    query = query.rstrip("\nFORMAT Null") + "\nFORMAT Null"
     result = []
     # warm caches
-    client.execute(query)
+    client.execute_no_result(query)
     for _ in range(count):
-        res = client.execute(query)
-        result.append(res.query_id)
+        query_id = client.execute_no_result(query)
+        result.append(query_id)
     return result
 
 
 def run_query_cold(client: ClickHouseClient, query: str, count: int) -> list[str]:
-    query = query.rstrip("\nFORMAT Null") + "\nFORMAT Null"
     result = []
     for _ in range(count):
-        res = client.execute(query, settings={"min_bytes_to_use_direct_io": 1})
-        result.append(res.query_id)
+        query_id = client.execute_no_result(
+            query, settings={"min_bytes_to_use_direct_io": 1}
+        )
+        result.append(query_id)
     return result

@@ -21,8 +21,8 @@ LOCK_UPLOAD_FILE = threading.Semaphore(3)
 
 def setup(service: Service, config: Config) -> None:
     client = service.client
-    client.execute("DROP TABLE IF EXISTS hits")
-    client.execute(
+    client.execute_no_result("DROP TABLE IF EXISTS hits")
+    client.execute_no_result(
         """
         CREATE TABLE hits
         (
@@ -158,7 +158,7 @@ def setup(service: Service, config: Config) -> None:
 
     with LOCK_UPLOAD_FILE:
         LOG.info("Inserting hits data")
-        client.execute(
+        client.execute_no_result(
             """INSERT INTO hits FORMAT TSV""",
             input=Path("hits.tsv"),
         )

@@ -6,7 +6,7 @@ import socket
 from collections.abc import Iterator
 from contextlib import contextmanager
 from time import sleep, time
-from typing import Self
+from typing import Any, Self, TypeAlias
 
 from aiven.client.client import AivenClient, Error
 
@@ -14,6 +14,8 @@ from clickhouse_benchmark.client import ClickHouseClient
 from clickhouse_benchmark.config import Config
 
 LOG = logging.getLogger(__name__)
+
+ServiceDict: TypeAlias = dict[str, Any]
 
 
 @dataclasses.dataclass
@@ -23,7 +25,7 @@ class Service:
     client: ClickHouseClient
 
     @classmethod
-    def from_running_service(cls, service: dict) -> Self:
+    def from_running_service(cls, service: ServiceDict) -> Self:
         port = next(
             c["port"] for c in service["components"] if c["component"] == "clickhouse"
         )
@@ -76,28 +78,30 @@ def create_services(client: AivenClient, config: Config) -> Iterator[Iterator[Se
 def get_or_create_service(client: AivenClient, plan: str, config: Config) -> str:
     service_name = plan
     try:
-        return client.get_service(config.project, service_name)["service_name"]
+        return str(client.get_service(config.project, service_name)["service_name"])
     except Error as e:
         if e.status != 404:
-            raise e from e
+            raise
 
         return create_service(client, plan, config)
 
 
 def create_service(client: AivenClient, plan: str, config: Config) -> str:
     LOG.info("Creating service %s", plan)
-    return client.create_service(
-        cloud=config.cloud,
-        service_type="clickhouse",
-        plan=plan,
-        project=config.project,
-        service=plan,
-    )["service_name"]
+    return str(
+        client.create_service(
+            cloud=config.cloud,
+            service_type="clickhouse",
+            plan=plan,
+            project=config.project,
+            service=plan,
+        )["service_name"]
+    )
 
 
 def wait_for_services_to_become_running(
     client: AivenClient, service_names: list[str], project: str, timeout: float = 300.0
-) -> Iterator[dict]:
+) -> Iterator[ServiceDict]:
     start_time = time()
     while time() - start_time < timeout:
         remaining_services = []

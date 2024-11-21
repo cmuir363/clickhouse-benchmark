@@ -28,7 +28,7 @@ def main() -> None:
         with futures.ThreadPoolExecutor(
             max_workers=MAX_CONCURRENT_BENCHMARKS
         ) as executor:
-            benchmark_result_futures: list[futures.Future[BenchmarkResult | None]] = []
+            benchmark_result_futures: list[futures.Future[BenchmarkResult]] = []
             for service in services:
                 benchmark_result_futures.append(
                     executor.submit(run_benchmark, service, config)
@@ -41,17 +41,16 @@ def main() -> None:
 
 
 def iterate_result_futures(
-    benchmark_result_futures: list[futures.Future[BenchmarkResult | None]],
+    benchmark_result_futures: list[futures.Future[BenchmarkResult]],
 ) -> Iterator[BenchmarkResult]:
     for f in futures.as_completed(benchmark_result_futures):
         if exception := f.exception():
             LOG.error("Error running benchmark", exc_info=exception)
         else:
-            if result := f.result():
-                yield result
+            yield f.result()
 
 
-def run_benchmark(service: Service, config: Config) -> BenchmarkResult | None:
+def run_benchmark(service: Service, config: Config) -> BenchmarkResult:
     if config.test == "clickbench":
         clickbench_setup(service, config)
     elif config.test == "sensor_data":

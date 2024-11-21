@@ -3,6 +3,7 @@ import json
 import logging
 import socket
 import subprocess
+from functools import cached_property
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -11,13 +12,13 @@ LOG = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
-class Result:
+class Output:
     query_id: str
     output: bytes
 
 
 @dataclasses.dataclass
-class JsonResult:
+class Result:
     query_id: str
     results: list[dict[str, Any]]
 
@@ -38,6 +39,51 @@ class ClickHouseClient:
         input: Path | None = None,
         host: str | None = None,
     ) -> Result:
+        res = self._execute(query, settings, input, host, format="JSON")
+        return Result(query_id=res.query_id, results=json.loads(res.output)["data"])
+
+    def execute_no_result(
+        self,
+        query: str,
+        settings: dict[str, Any] | None = None,
+        input: Path | None = None,
+        host: str | None = None,
+    ) -> str:
+        res = self._execute(query, settings, input, host, format="Null")
+        return res.query_id
+
+    def execute_all_nodes(
+        self,
+        query: str,
+        settings: dict[str, Any] | None = None,
+        input: Path | None = None,
+    ) -> list[Result]:
+        res = []
+        import concurrent.futures
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [
+                executor.submit(self.execute, query, settings, input, host)
+                for host in self._hosts
+            ]
+            for future in concurrent.futures.as_completed(futures):
+                if exception := future.exception():
+                    raise exception
+                res.append(future.result())
+        return res
+
+    @cached_property
+    def _hosts(self) -> list[str]:
+        return list(set([i[4][0] for i in socket.getaddrinfo(self.host, None)]))
+
+    def _execute(
+        self,
+        query: str,
+        settings: dict[str, Any] | None = None,
+        input: Path | None = None,
+        host: str | None = None,
+        format: str = "JSON",
+    ) -> Output:
         LOG.info("Running query: %s", query)
         if not host:
             host = self.host
@@ -61,6 +107,7 @@ class ClickHouseClient:
             query,
             "--query_id",
             query_id,
+            f"--format={format}",
         ]
         if self.secure:
             cmd.append("--secure")
@@ -82,38 +129,4 @@ class ClickHouseClient:
             raise RuntimeError(
                 f"clickhouse client failed with {process.returncode}: {stderr.decode()}"
             )
-        return Result(query_id=query_id, output=stdout)
-
-    def execute_json(
-        self,
-        query: str,
-        settings: dict[str, Any] | None = None,
-        input: Path | None = None,
-        host: str | None = None,
-    ) -> JsonResult:
-        query = query.rstrip("FORMAT JSON") + " FORMAT JSON"
-        res = self.execute(query, settings, input, host)
-        return JsonResult(query_id=res.query_id, results=json.loads(res.output)["data"])
-
-    def execute_all_nodes(
-        self,
-        query: str,
-        settings: dict[str, Any] | None = None,
-        input: Path | None = None,
-    ) -> list[Result]:
-        res = []
-        import concurrent.futures
-
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [
-                executor.submit(self.execute, query, settings, input, host)
-                for host in self.hosts()
-            ]
-            for future in concurrent.futures.as_completed(futures):
-                if exception := future.exception():
-                    raise exception
-                res.append(future.result())
-        return res
-
-    def hosts(self) -> list[str]:
-        return list(set([i[4][0] for i in socket.getaddrinfo(self.host, None)]))
+        return Output(query_id=query_id, output=stdout)

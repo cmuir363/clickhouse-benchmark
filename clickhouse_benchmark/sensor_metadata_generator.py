@@ -19,7 +19,9 @@ SENSOR_TYPES = [
 ]
 
 
-def generate_sensors(num_owners, num_factories, sensors_per_factory):
+def generate_sensors(
+    num_owners: int, num_factories: int, sensors_per_factory: int
+) -> list[list[str]]:
     sensors = []
     for _ in range(num_owners):
         owner_id = f"owner_{uuid.uuid4()}"
@@ -35,7 +37,7 @@ def generate_sensors(num_owners, num_factories, sensors_per_factory):
     return sensors
 
 
-def write_sensors_to_csv(sensors, output_file):
+def write_sensors_to_csv(sensors: list[list[str]], output_file: str) -> None:
     with open(output_file, mode="w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["ownerId", "factoryId", "sensorId", "sensorType"])
@@ -43,7 +45,7 @@ def write_sensors_to_csv(sensors, output_file):
     print(f"Sensors generated and saved to {output_file}")
 
 
-def main():
+def main() -> None:
     sensors = generate_sensors(NUM_OWNERS, NUM_FACTORIES, SENSORS_PER_FACTORY)
     write_sensors_to_csv(sensors, OUTPUT_FILE)
 

@@ -5,7 +5,7 @@ import threading
 from pathlib import Path
 
 from google.auth.credentials import AnonymousCredentials
-from google.cloud import storage
+from google.cloud import storage  # type: ignore
 
 from clickhouse_benchmark.client import ClickHouseClient
 
@@ -20,7 +20,7 @@ LOCK_UPLOAD_FILE = threading.Semaphore(3)
 def generate_metadata(client: ClickHouseClient) -> None:
     LOG.info("Generating metadata for %s", client.host)
 
-    def map_sensor_type(sensor_type):
+    def map_sensor_type(sensor_type: str) -> int | None:
         sensor_type_mapping = {
             "Temperature": 1,
             "Humidity": 2,
@@ -31,14 +31,13 @@ def generate_metadata(client: ClickHouseClient) -> None:
         }
         return sensor_type_mapping.get(sensor_type, None)
 
-    def retrieve_sensors_metadata_file():
+    def retrieve_sensors_metadata_file() -> None:
         if Path("sensors.csv").exists():
             return
         if not Path("sensors_prev.csv").exists():
+            creds = AnonymousCredentials()  # type: ignore
             # need to set a dumm project and use anon creds to donwload a public file
-            storage_client = storage.Client(
-                credentials=AnonymousCredentials(), project="dummy-project"
-            )
+            storage_client = storage.Client(credentials=creds, project="dummy-project")
             bucket = storage_client.bucket("cmuir-clickhouse-demo")
             sensors_file = bucket.blob("sensors.csv")
             sensors_file.download_to_filename("sensors_prev.csv")
@@ -74,7 +73,7 @@ def generate_metadata(client: ClickHouseClient) -> None:
                 os.remove("sensors.csv")
 
     truncate_query = "TRUNCATE TABLE default.iot_metadata"
-    client.execute(truncate_query)
+    client.execute_no_result(truncate_query)
 
     with LOCK_DOWNLOAD_FILE:
         retrieve_sensors_metadata_file()
@@ -82,11 +81,9 @@ def generate_metadata(client: ClickHouseClient) -> None:
     with LOCK_UPLOAD_FILE:
         insert_query = """
         INSERT INTO default.iot_metadata (rowNumber, ownerId, factoryId, sensorId, sensorType)
-        SELECT *
-        FROM input()
         FORMAT CSVWithNames
         """
 
         print("Inserting sensors metadata into ClickHouse.")
-        client.execute(insert_query, input=Path("sensors.csv"))
+        client.execute_no_result(insert_query, input=Path("sensors.csv"))
         print("CSV data loaded into ClickHouse successfully.")

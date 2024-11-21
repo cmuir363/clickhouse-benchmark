@@ -63,7 +63,7 @@ def get_query_statistics(
         (type = 'QueryFinish' OR type = 'ExceptionWhileProcessing')
         AND query_id IN {query_ids}
     """
-    resp = client.execute_json(query)
+    resp = client.execute(query)
     return QueryStatistics(**resp.results[0])
 
 
