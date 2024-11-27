@@ -7,7 +7,7 @@ from typing_extensions import Literal
 class Config(BaseModel):
     query_run_count: int = 10
     output_file: Path = Path("results.csv")
-    terminate_services_on_exit: bool = False
+    terminate_services_on_exit: bool = True
     plans: list[str] = [
         "business-16",
         "business-32",

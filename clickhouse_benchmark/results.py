@@ -33,6 +33,11 @@ class BenchmarkResult(BaseModel):
     results: list[QueryResult]
 
 
+class InsertBenchmarkResult(BaseModel):
+    plan: str
+    results: QueryStatistics
+
+
 def get_query_result(
     client: ClickHouseClient, query: str, hot_ids: list[str], cold_ids: list[str]
 ) -> QueryResult:
@@ -105,3 +110,32 @@ def write_results_to_csv(results: Iterable[BenchmarkResult], file_path: Path) ->
                         *query_result.cold.memory_usage,
                     ]
                 )
+
+
+def write_insert_results_to_csv(
+    results: Iterable[InsertBenchmarkResult], file_path: Path
+) -> None:
+    with open(file_path, "w") as file:
+        writer = csv.writer(file)
+        writer.writerow(
+            [
+                "plan",
+                "total_queries",
+                "succeeded",
+                "failed",
+                *["query_duration_ms_" + str(q) for q in QUANTILES],
+                *["memory_usage_ms_" + str(q) for q in QUANTILES],
+            ]
+        )
+        for result in results:
+            LOG.info("Writing results for %s", result.plan)
+            writer.writerow(
+                [
+                    result.plan,
+                    result.results.total_queries,
+                    result.results.succeeded,
+                    result.results.failed,
+                    *result.results.query_duration_ms,
+                    *result.results.memory_usage,
+                ]
+            )

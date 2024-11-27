@@ -7,8 +7,13 @@ from typer import Typer
 from clickhouse_benchmark.analysis import perform_analysis
 from clickhouse_benchmark.benchmark import run_selects
 from clickhouse_benchmark.clickbench import setup as clickbench_setup
+from clickhouse_benchmark.clickbench_insert import run_insert
 from clickhouse_benchmark.config import Config
-from clickhouse_benchmark.results import BenchmarkResult, write_results_to_csv
+from clickhouse_benchmark.results import (
+    BenchmarkResult,
+    write_insert_results_to_csv,
+    write_results_to_csv,
+)
 from clickhouse_benchmark.sensor_data import setup as sensor_data_setup
 from clickhouse_benchmark.service_matrix import (
     Service,
@@ -52,7 +57,34 @@ def terminate_instances() -> None:
 
 @CLI.command()
 def analyze_results() -> None:
-    perform_analysis()
+    perform_analysis(
+        [
+            "hot_query_duration_ms_0.5",
+            "hot_query_duration_ms_0.9",
+            "cold_query_duration_ms_0.5",
+            "cold_query_duration_ms_0.9",
+        ]
+    )
+
+
+@CLI.command()
+def analyze_insert_results() -> None:
+    perform_analysis(["query_duration_ms_0.5", "query_duration_ms_0.9"])
+
+
+@CLI.command()
+def insert_benchmark() -> None:
+    config = Config()
+    client = create_aiven_client()
+    with create_services(client, config) as services:
+        results = []
+        for service in services:
+            results.append(run_insert(service, config))
+        write_insert_results_to_csv(
+            results,
+            config.output_file,
+        )
+    LOG.info("Benchmark finished")
 
 
 def iterate_result_futures(

@@ -57,13 +57,13 @@ class ClickHouseClient:
         query: str,
         settings: dict[str, Any] | None = None,
         input: Path | None = None,
-    ) -> list[Result]:
+    ) -> list[str]:
         res = []
         import concurrent.futures
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [
-                executor.submit(self.execute, query, settings, input, host)
+                executor.submit(self.execute_no_result, query, settings, input, host)
                 for host in self._hosts
             ]
             for future in concurrent.futures.as_completed(futures):
