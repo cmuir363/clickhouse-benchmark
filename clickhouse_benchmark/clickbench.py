@@ -137,6 +137,17 @@ def setup(service: Service, config: Config) -> None:
         """
     )
 
+    download_file()
+
+    with LOCK_UPLOAD_FILE:
+        LOG.info("Inserting hits data")
+        client.execute_no_result(
+            """INSERT INTO hits FORMAT TSV""",
+            input=Path("hits.tsv"),
+        )
+
+
+def download_file() -> None:
     with LOCK_DOWNLOAD_FILE:
         if not Path("hits.tsv").exists():
             LOG.info("Downloading hits data")
@@ -155,10 +166,3 @@ def setup(service: Service, config: Config) -> None:
             except RuntimeError:
                 Path("hits.tsv").unlink()
                 raise
-
-    with LOCK_UPLOAD_FILE:
-        LOG.info("Inserting hits data")
-        client.execute_no_result(
-            """INSERT INTO hits FORMAT TSV""",
-            input=Path("hits.tsv"),
-        )

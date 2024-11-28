@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from clickhouse_benchmark.clickbench import download_file
 from clickhouse_benchmark.client import ClickHouseClient
 from clickhouse_benchmark.config import Config
 from clickhouse_benchmark.results import InsertBenchmarkResult, get_query_statistics
@@ -7,6 +8,8 @@ from clickhouse_benchmark.service_matrix import Service
 
 
 def run_insert(service: Service, config: Config) -> InsertBenchmarkResult:
+    download_file()
+
     client = service.client
     client.execute_no_result(
         """
