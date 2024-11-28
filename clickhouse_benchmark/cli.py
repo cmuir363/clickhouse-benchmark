@@ -4,7 +4,7 @@ from concurrent import futures
 
 from typer import Typer
 
-from clickhouse_benchmark.analysis import perform_analysis
+from clickhouse_benchmark.analysis import perform_analysis, perform_insert_analysis
 from clickhouse_benchmark.benchmark import run_selects
 from clickhouse_benchmark.clickbench import setup as clickbench_setup
 from clickhouse_benchmark.clickbench_insert import run_insert
@@ -57,19 +57,12 @@ def terminate_instances() -> None:
 
 @CLI.command()
 def analyze_results() -> None:
-    perform_analysis(
-        [
-            "hot_query_duration_ms_0.5",
-            "hot_query_duration_ms_0.9",
-            "cold_query_duration_ms_0.5",
-            "cold_query_duration_ms_0.9",
-        ]
-    )
+    perform_analysis()
 
 
 @CLI.command()
 def analyze_insert_results() -> None:
-    perform_analysis(["query_duration_ms_0.5", "query_duration_ms_0.9"])
+    perform_insert_analysis()
 
 
 @CLI.command()

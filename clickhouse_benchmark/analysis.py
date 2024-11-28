@@ -24,39 +24,101 @@ SCHEMA = pl.Schema(
 )
 
 
-def perform_analysis(cols: list[str]) -> None:
-    df = pl.read_csv("results.csv").lazy()
-    baseline_cols = [f"baseline_{col}" for col in cols]
-    ratio_cols = [f"{col}_ratio" for col in cols]
-    result_cols = [f"{col}_result" for col in ratio_cols]
-
+def perform_analysis() -> None:
+    df = pl.read_csv("results.csv", schema=SCHEMA).lazy()
     df = (
         df.join(
             df.group_by("query").agg(
-                [
-                    pl.min(col).alias(baseline_col)
-                    for col, baseline_col in zip(cols, baseline_cols)
-                ]
+                pl.min("hot_query_duration_ms_0.5").alias(
+                    "baseline_hot_query_duration_ms_0.5"
+                ),
+                pl.min("hot_query_duration_ms_0.9").alias(
+                    "baseline_hot_query_duration_ms_0.9"
+                ),
+                pl.min("cold_query_duration_ms_0.5").alias(
+                    "baseline_cold_query_duration_ms_0.5"
+                ),
+                pl.min("cold_query_duration_ms_0.9").alias(
+                    "baseline_cold_query_duration_ms_0.9"
+                ),
             ),
             on="query",
         )
         .select(
-            ["plan", "query"]
-            + [
-                ratio(pl.col(col), pl.col(baseline_col)).alias(ratio_col)
-                for col, baseline_col, ratio_col in zip(cols, baseline_cols, ratio_cols)
-            ]
+            "plan",
+            "query",
+            ratio(
+                pl.col("hot_query_duration_ms_0.5"),
+                pl.col("baseline_hot_query_duration_ms_0.5"),
+            ).alias("hot_query_duration_ms_0.5_ratio"),
+            ratio(
+                pl.col("hot_query_duration_ms_0.9"),
+                pl.col("baseline_hot_query_duration_ms_0.9"),
+            ).alias("hot_query_duration_ms_0.9_ratio"),
+            ratio(
+                pl.col("cold_query_duration_ms_0.5"),
+                pl.col("baseline_cold_query_duration_ms_0.5"),
+            ).alias("cold_query_duration_ms_0.5_ratio"),
+            ratio(
+                pl.col("cold_query_duration_ms_0.9"),
+                pl.col("baseline_cold_query_duration_ms_0.9"),
+            ).alias("cold_query_duration_ms_0.9_ratio"),
         )
         .group_by("plan")
         .agg(
-            [
-                geometric_mean(pl.col(ratio_col)).alias(result_col)
-                for ratio_col, result_col in zip(ratio_cols, result_cols)
-            ]
+            geometric_mean(pl.col("hot_query_duration_ms_0.5_ratio")).alias(
+                "hot_query_duration_ms_0.5_result"
+            ),
+            geometric_mean(pl.col("hot_query_duration_ms_0.9_ratio")).alias(
+                "hot_query_duration_ms_0.9_result"
+            ),
+            geometric_mean(pl.col("cold_query_duration_ms_0.5_ratio")).alias(
+                "cold_query_duration_ms_0.5_result"
+            ),
+            geometric_mean(pl.col("cold_query_duration_ms_0.9_ratio")).alias(
+                "cold_query_duration_ms_0.9_result"
+            ),
         )
-    ).sort(result_cols[0])
+    ).sort("hot_query_duration_ms_0.5_result")
     # write results
     df.collect().write_csv("results_ratio.csv", include_header=True)
+
+
+INSERT_SCHEMA = pl.Schema(
+    {
+        "plan": pl.String,
+        "total_queries": pl.Int64,
+        "succeeded": pl.Int64,
+        "failed": pl.Int64,
+        "query_duration_ms_0.5": pl.Float64,
+        "query_duration_ms_0.9": pl.Float64,
+        "memory_usage_ms_0.5": pl.Float64,
+        "memory_usage_ms_0.9": pl.Float64,
+    }
+)
+
+
+def perform_insert_analysis() -> None:
+    df = pl.read_csv("results.csv", schema=INSERT_SCHEMA).lazy()
+    df.select(
+        pl.col("plan"),
+        pl.col("query_duration_ms_0.5"),
+        pl.col("query_duration_ms_0.9"),
+        pl.min("query_duration_ms_0.5").alias("baseline_query_duration_ms_0.5"),
+        pl.min("query_duration_ms_0.9").alias("baseline_query_duration_ms_0.9"),
+    ).select(
+        "plan",
+        ratio(
+            pl.col("query_duration_ms_0.5"),
+            pl.col("baseline_query_duration_ms_0.5"),
+        ).alias("query_duration_ms_0.5_ratio"),
+        ratio(
+            pl.col("query_duration_ms_0.9"),
+            pl.col("baseline_query_duration_ms_0.9"),
+        ).alias("query_duration_ms_0.9_ratio"),
+    ).sort("query_duration_ms_0.5_ratio").collect().write_csv(
+        "results_ratio.csv", include_header=True
+    )
 
 
 def geometric_mean(col: pl.Expr) -> pl.Expr:
