@@ -100,7 +100,7 @@ def create_service(client: AivenClient, plan: str, config: Config) -> str:
 
 
 def wait_for_services_to_become_running(
-    client: AivenClient, service_names: list[str], project: str, timeout: float = 300.0
+    client: AivenClient, service_names: list[str], project: str, timeout: float = 7200.0
 ) -> Iterator[ServiceDict]:
     start_time = time()
     while time() - start_time < timeout:
