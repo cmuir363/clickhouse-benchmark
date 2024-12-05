@@ -2,6 +2,7 @@ import csv
 import logging
 from collections.abc import Iterable
 from pathlib import Path
+from typing import IO, Any
 
 from pydantic import BaseModel
 
@@ -72,44 +73,57 @@ def get_query_statistics(
     return QueryStatistics(**resp.results[0])
 
 
-def write_results_to_csv(results: Iterable[BenchmarkResult], file_path: Path) -> None:
-    with open(file_path, "w") as file:
-        writer = csv.writer(file)
-        writer.writerow(
-            [
-                "plan",
-                "query",
-                "hot_total_queries",
-                "hot_succeeded",
-                "hot_failed",
-                *["hot_query_duration_ms_" + str(q) for q in QUANTILES],
-                *["hot_memory_usage_ms_" + str(q) for q in QUANTILES],
-                "cold_total_queries",
-                "cold_succeeded",
-                "cold_failed",
-                *["cold_query_duration_ms_" + str(q) for q in QUANTILES],
-                *["cold_memory_usage_ms_" + str(q) for q in QUANTILES],
-            ]
-        )
-        for result in results:
-            LOG.info("Writing results for %s", result.plan)
-            for query_result in result.results:
-                writer.writerow(
-                    [
-                        result.plan,
-                        query_result.query.strip(),
-                        query_result.hot.total_queries,
-                        query_result.hot.succeeded,
-                        query_result.hot.failed,
-                        *query_result.hot.query_duration_ms,
-                        *query_result.hot.memory_usage,
-                        query_result.cold.total_queries,
-                        query_result.cold.succeeded,
-                        query_result.cold.failed,
-                        *query_result.cold.query_duration_ms,
-                        *query_result.cold.memory_usage,
-                    ]
-                )
+class ResultsWriter:
+    def __init__(self, file_path: Path):
+        self.file_path = file_path
+        self._file: IO | None = None
+        self._writer: Any = None
+
+    def _get_writer(self) -> Any:
+        if self._writer is None:
+            self._file = open(self.file_path, "w")
+            self._writer = csv.writer(self._file)
+            self._writer.writerow(
+                [
+                    "plan",
+                    "query",
+                    "hot_total_queries",
+                    "hot_succeeded",
+                    "hot_failed",
+                    *["hot_query_duration_ms_" + str(q) for q in QUANTILES],
+                    *["hot_memory_usage_ms_" + str(q) for q in QUANTILES],
+                    "cold_total_queries",
+                    "cold_succeeded",
+                    "cold_failed",
+                    *["cold_query_duration_ms_" + str(q) for q in QUANTILES],
+                    *["cold_memory_usage_ms_" + str(q) for q in QUANTILES],
+                ]
+            )
+        return self._writer
+
+    def close(self):
+        if self._file is not None:
+            self._file.close()
+
+    def write(self, result: BenchmarkResult) -> None:
+        LOG.info("Writing results for %s", result.plan)
+        for query_result in result.results:
+            self._get_writer().writerow(
+                [
+                    result.plan,
+                    query_result.query.strip(),
+                    query_result.hot.total_queries,
+                    query_result.hot.succeeded,
+                    query_result.hot.failed,
+                    *query_result.hot.query_duration_ms,
+                    *query_result.hot.memory_usage,
+                    query_result.cold.total_queries,
+                    query_result.cold.succeeded,
+                    query_result.cold.failed,
+                    *query_result.cold.query_duration_ms,
+                    *query_result.cold.memory_usage,
+                ]
+            )
 
 
 def write_insert_results_to_csv(

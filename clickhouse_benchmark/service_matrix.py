@@ -137,9 +137,13 @@ def terminate_services(
     client: AivenClient, service_names: list[str], project: str
 ) -> None:
     for service_name in service_names:
-        LOG.info("Terminating service %s", service_name)
-        try:
-            client.delete_service(project, service_name)
-        except Error as e:
-            if e.status != 404:
-                raise
+        terminate_service(client, service_name, project)
+
+
+def terminate_service(client: AivenClient, service_name: str, project: str) -> None:
+    LOG.info("Terminating service %s", service_name)
+    try:
+        client.delete_service(project, service_name)
+    except Error as e:
+        if e.status != 404:
+            raise
