@@ -1,0 +1,860 @@
+name,memory_gb,vcpus,price_usd,storage
+a1.2xlarge,16.0,8,148.9200,EBS only
+a1.4xlarge,32.0,16,297.8400,EBS only
+a1.large,4.0,2,37.2300,EBS only
+a1.medium,2.0,1,18.6150,EBS only
+a1.metal,32.0,16,297.8400,EBS only
+a1.xlarge,8.0,4,74.4600,EBS only
+c1.medium,1.7,2,94.9000,350 GB HDD
+c1.xlarge,7.0,8,379.6000,1680 GB (4 * 420 GB HDD)
+c3.2xlarge,15.0,8,306.6000,160 GB (2 * 80 GB SSD)
+c3.4xlarge,30.0,16,613.2000,320 GB (2 * 160 GB SSD)
+c3.8xlarge,60.0,32,1226.4000,640 GB (2 * 320 GB SSD)
+c3.large,3.75,2,76.6500,32 GB (2 * 16 GB SSD)
+c3.xlarge,7.5,4,153.3000,80 GB (2 * 40 GB SSD)
+c4.2xlarge,15.0,8,290.5400,EBS only
+c4.4xlarge,30.0,16,581.0800,EBS only
+c4.8xlarge,60.0,36,1161.4300,EBS only
+c4.large,3.75,2,73.0000,EBS only
+c4.xlarge,7.5,4,145.2700,EBS only
+c5.12xlarge,96.0,48,1489.2000,EBS only
+c5.18xlarge,144.0,72,2233.8000,EBS only
+c5.24xlarge,192.0,96,2978.4000,EBS only
+c5.2xlarge,16.0,8,248.2000,EBS only
+c5.4xlarge,32.0,16,496.4000,EBS only
+c5.9xlarge,72.0,36,1116.9000,EBS only
+c5.large,4.0,2,62.0500,EBS only
+c5.metal,192.0,96,2978.4000,EBS only
+c5.xlarge,8.0,4,124.1000,EBS only
+c5a.12xlarge,96.0,48,1349.0400,EBS only
+c5a.16xlarge,128.0,64,1798.7200,EBS only
+c5a.24xlarge,192.0,96,2698.0800,EBS only
+c5a.2xlarge,16.0,8,224.8400,EBS only
+c5a.4xlarge,32.0,16,449.6800,EBS only
+c5a.8xlarge,64.0,32,899.3600,EBS only
+c5a.large,4.0,2,56.2100,EBS only
+c5a.xlarge,8.0,4,112.4200,EBS only
+c5ad.12xlarge,96.0,48,1506.7200,1800 GB (2 * 900 GB NVMe SSD)
+c5ad.16xlarge,128.0,64,2008.9600,2400 GB (2 * 1200 GB NVMe SSD)
+c5ad.24xlarge,192.0,96,3013.4400,3800 GB (2 * 1900 GB NVMe SSD)
+c5ad.2xlarge,16.0,8,251.1200,300 GB NVMe SSD
+c5ad.4xlarge,32.0,16,502.2400,600 GB (2 * 300 GB NVMe SSD)
+c5ad.8xlarge,64.0,32,1004.4800,1200 GB (2 * 600 GB NVMe SSD)
+c5ad.large,4.0,2,62.7800,75 GB NVMe SSD
+c5ad.xlarge,8.0,4,125.5600,150 GB NVMe SSD
+c5d.12xlarge,96.0,48,1681.9200,1800 GB (2 * 900 GB NVMe SSD)
+c5d.18xlarge,144.0,72,2522.8800,1800 GB (2 * 900 GB NVMe SSD)
+c5d.24xlarge,192.0,96,3363.8400,3600 GB (4 * 900 GB NVMe SSD)
+c5d.2xlarge,16.0,8,280.3200,200 GB NVMe SSD
+c5d.4xlarge,32.0,16,560.6400,400 GB NVMe SSD
+c5d.9xlarge,72.0,36,1261.4400,900 GB NVMe SSD
+c5d.large,4.0,2,70.0800,50 GB NVMe SSD
+c5d.metal,192.0,96,3363.8400,3600 GB (4 * 900 GB NVMe SSD)
+c5d.xlarge,8.0,4,140.1600,100 GB NVMe SSD
+c5n.18xlarge,192.0,72,2838.2400,EBS only
+c5n.2xlarge,21.0,8,315.3600,EBS only
+c5n.4xlarge,42.0,16,630.7200,EBS only
+c5n.9xlarge,96.0,36,1419.1200,EBS only
+c5n.large,5.25,2,78.8400,EBS only
+c5n.metal,192.0,72,2838.2400,EBS only
+c5n.xlarge,10.5,4,157.6800,EBS only
+c6a.12xlarge,96.0,48,1340.2800,EBS only
+c6a.16xlarge,128.0,64,1787.0400,EBS only
+c6a.24xlarge,192.0,96,2680.5600,EBS only
+c6a.2xlarge,16.0,8,223.3800,EBS only
+c6a.32xlarge,256.0,128,3574.0800,EBS only
+c6a.48xlarge,384.0,192,5361.1200,EBS only
+c6a.4xlarge,32.0,16,446.7600,EBS only
+c6a.8xlarge,64.0,32,893.5200,EBS only
+c6a.large,4.0,2,55.8450,EBS only
+c6a.metal,384.0,192,5361.1200,EBS only
+c6a.xlarge,8.0,4,111.6900,EBS only
+c6g.12xlarge,96.0,48,1191.3600,EBS only
+c6g.16xlarge,128.0,64,1588.4800,EBS only
+c6g.2xlarge,16.0,8,198.5600,EBS only
+c6g.4xlarge,32.0,16,397.1200,EBS only
+c6g.8xlarge,64.0,32,794.2400,EBS only
+c6g.large,4.0,2,49.6400,EBS only
+c6g.medium,2.0,1,24.8200,EBS only
+c6g.metal,128.0,64,1588.4800,EBS only
+c6g.xlarge,8.0,4,99.2800,EBS only
+c6gd.12xlarge,96.0,48,1345.5360,2850 GB (2 * 1425 GB NVMe SSD)
+c6gd.16xlarge,128.0,64,1794.0480,3800 GB (2 * 1900 GB NVMe SSD)
+c6gd.2xlarge,16.0,8,224.2560,474 GB NVMe SSD
+c6gd.4xlarge,32.0,16,448.5120,950 GB NVMe SSD
+c6gd.8xlarge,64.0,32,897.0240,1900 GB NVMe SSD
+c6gd.large,4.0,2,56.0640,118 GB NVMe SSD
+c6gd.medium,2.0,1,28.0320,59 GB NVMe SSD
+c6gd.metal,128.0,64,1794.0480,3800 GB (2 * 1900 GB NVMe SSD)
+c6gd.xlarge,8.0,4,112.1280,237 GB NVMe SSD
+c6gn.12xlarge,96.0,48,1513.7280,EBS only
+c6gn.16xlarge,128.0,64,2018.3040,EBS only
+c6gn.2xlarge,16.0,8,252.2880,EBS only
+c6gn.4xlarge,32.0,16,504.5760,EBS only
+c6gn.8xlarge,64.0,32,1009.1520,EBS only
+c6gn.large,4.0,2,63.0720,EBS only
+c6gn.medium,2.0,1,31.5360,EBS only
+c6gn.xlarge,8.0,4,126.1440,EBS only
+c6i.12xlarge,96.0,48,1489.2000,EBS only
+c6i.16xlarge,128.0,64,1985.6000,EBS only
+c6i.24xlarge,192.0,96,2978.4000,EBS only
+c6i.2xlarge,16.0,8,248.2000,EBS only
+c6i.32xlarge,256.0,128,3971.2000,EBS only
+c6i.4xlarge,32.0,16,496.4000,EBS only
+c6i.8xlarge,64.0,32,992.8000,EBS only
+c6i.large,4.0,2,62.0500,EBS only
+c6i.metal,256.0,128,3971.2000,EBS only
+c6i.xlarge,8.0,4,124.1000,EBS only
+c6id.12xlarge,96.0,48,1766.0160,2850 GB (2 * 1425 GB NVMe SSD)
+c6id.16xlarge,128.0,64,2354.6880,3800 GB (2 * 1900 GB NVMe SSD)
+c6id.24xlarge,192.0,96,3532.0320,5700 GB (4 * 1425 GB NVMe SSD)
+c6id.2xlarge,16.0,8,294.3360,474 GB NVMe SSD
+c6id.32xlarge,256.0,128,4709.3760,7600 GB (4 * 1900 GB NVMe SSD)
+c6id.4xlarge,32.0,16,588.6720,950 GB NVMe SSD
+c6id.8xlarge,64.0,32,1177.3440,1900 GB NVMe SSD
+c6id.large,4.0,2,73.5840,118 GB NVMe SSD
+c6id.metal,256.0,128,4709.3760,7600 GB (4 * 1900 GB NVMe SSD)
+c6id.xlarge,8.0,4,147.1680,237 GB NVMe SSD
+c6in.12xlarge,96.0,48,1986.7680,EBS only
+c6in.16xlarge,128.0,64,2649.0240,EBS only
+c6in.24xlarge,192.0,96,3973.5360,EBS only
+c6in.2xlarge,16.0,8,331.1280,EBS only
+c6in.32xlarge,256.0,128,5298.0480,EBS only
+c6in.4xlarge,32.0,16,662.2560,EBS only
+c6in.8xlarge,64.0,32,1324.5120,EBS only
+c6in.large,4.0,2,82.7820,EBS only
+c6in.metal,256.0,128,5298.0480,EBS only
+c6in.xlarge,8.0,4,165.5640,EBS only
+c7a.12xlarge,96.0,48,1798.2528,EBS only
+c7a.16xlarge,128.0,64,2397.6704,EBS only
+c7a.24xlarge,192.0,96,3596.5056,EBS only
+c7a.2xlarge,16.0,8,299.7088,EBS only
+c7a.32xlarge,256.0,128,4795.3408,EBS only
+c7a.48xlarge,384.0,192,7193.0112,EBS only
+c7a.4xlarge,32.0,16,599.4176,EBS only
+c7a.8xlarge,64.0,32,1198.8352,EBS only
+c7a.large,4.0,2,74.9272,EBS only
+c7a.medium,2.0,1,37.4636,EBS only
+c7a.metal-48xl,384.0,192,7193.0112,EBS only
+c7a.xlarge,8.0,4,149.8544,EBS only
+c7g.12xlarge,96.0,48,1270.2000,EBS only
+c7g.16xlarge,128.0,64,1693.6000,EBS only
+c7g.2xlarge,16.0,8,211.7000,EBS only
+c7g.4xlarge,32.0,16,423.4000,EBS only
+c7g.8xlarge,64.0,32,846.8000,EBS only
+c7g.large,4.0,2,52.9250,EBS only
+c7g.medium,2.0,1,26.4990,EBS only
+c7g.metal,128.0,64,1693.6000,EBS only
+c7g.xlarge,8.0,4,105.8500,EBS only
+c7gd.12xlarge,96.0,48,1589.4290,2850 GB (2 * 1425 GB NVMe SSD)
+c7gd.16xlarge,128.0,64,2119.1900,3800 GB (2 * 1900 GB NVMe SSD)
+c7gd.2xlarge,16.0,8,264.9170,474 GB NVMe SSD
+c7gd.4xlarge,32.0,16,529.8340,950 GB NVMe SSD
+c7gd.8xlarge,64.0,32,1059.5950,1900 GB NVMe SSD
+c7gd.large,4.0,2,66.2110,118 GB NVMe SSD
+c7gd.medium,2.0,1,33.1420,59 GB NVMe SSD
+c7gd.metal,128.0,64,2119.1900,3800 GB (2 * 1900 GB NVMe SSD)
+c7gd.xlarge,8.0,4,132.4220,237 GB NVMe SSD
+c7gn.12xlarge,96.0,48,2186.4960,EBS only
+c7gn.16xlarge,128.0,64,2915.3280,EBS only
+c7gn.2xlarge,16.0,8,364.4160,EBS only
+c7gn.4xlarge,32.0,16,728.8320,EBS only
+c7gn.8xlarge,64.0,32,1457.6640,EBS only
+c7gn.large,4.0,2,91.1040,EBS only
+c7gn.medium,2.0,1,45.5520,EBS only
+c7gn.metal,128.0,64,2915.3280,EBS only
+c7gn.xlarge,8.0,4,182.2080,EBS only
+c7i-flex.2xlarge,16.0,8,247.5795,EBS only
+c7i-flex.4xlarge,32.0,16,495.1590,EBS only
+c7i-flex.8xlarge,64.0,32,990.3180,EBS only
+c7i-flex.large,4.0,2,61.8967,EBS only
+c7i-flex.xlarge,8.0,4,123.7934,EBS only
+c7i.12xlarge,96.0,48,1563.6600,EBS only
+c7i.16xlarge,128.0,64,2084.8800,EBS only
+c7i.24xlarge,192.0,96,3127.3200,EBS only
+c7i.2xlarge,16.0,8,260.6100,EBS only
+c7i.48xlarge,384.0,192,6254.6400,EBS only
+c7i.4xlarge,32.0,16,521.2200,EBS only
+c7i.8xlarge,64.0,32,1042.4400,EBS only
+c7i.large,4.0,2,65.1525,EBS only
+c7i.metal-24xl,192.0,96,3127.3200,EBS only
+c7i.metal-48xl,384.0,192,6254.6400,EBS only
+c7i.xlarge,8.0,4,130.3050,EBS only
+c8g.12xlarge,96.0,48,1397.3952,EBS only
+c8g.16xlarge,128.0,64,1863.1936,EBS only
+c8g.24xlarge,192.0,96,2794.7904,EBS only
+c8g.2xlarge,16.0,8,232.8992,EBS only
+c8g.48xlarge,384.0,192,5589.5808,EBS only
+c8g.4xlarge,32.0,16,465.7984,EBS only
+c8g.8xlarge,64.0,32,931.5968,EBS only
+c8g.large,4.0,2,58.2248,EBS only
+c8g.medium,2.0,1,29.1124,EBS only
+c8g.metal-24xl,192.0,96,2794.7904,EBS only
+c8g.metal-48xl,384.0,192,5589.5808,EBS only
+c8g.xlarge,8.0,4,116.4496,EBS only
+cr1.8xlarge,244.0,32,2555.0000,EBS only
+d2.2xlarge,61.0,8,1007.4000,12288 GB (6 * 2048 GB HDD)
+d2.4xlarge,122.0,16,2014.8000,24576 GB (12 * 2048 GB HDD)
+d2.8xlarge,244.0,36,4029.6000,49152 GB (24 * 2048 GB HDD)
+d2.xlarge,30.5,4,503.7000,6144 GB (3 * 2048 GB HDD)
+d3.2xlarge,64.0,8,729.2700,11880 GB (6 * 1980 GB NVMe HDD)
+d3.4xlarge,128.0,16,1458.5400,23760 GB (12 * 1980 GB NVMe HDD)
+d3.8xlarge,256.0,32,2916.7296,47520 GB (24 * 1980 GB NVMe HDD)
+d3.xlarge,32.0,4,364.2700,5940 GB (3 * 1980 GB NVMe HDD)
+d3en.12xlarge,192.0,48,4605.3072,335520 GB (24 * 13980 GB NVMe HDD)
+d3en.2xlarge,32.0,8,767.2300,55920 GB (4 * 13980 GB NVMe HDD)
+d3en.4xlarge,64.0,16,1535.1900,111840 GB (8 * 13980 GB NVMe HDD)
+d3en.6xlarge,96.0,24,2302.4200,167760 GB (12 * 13980 GB NVMe HDD)
+d3en.8xlarge,128.0,32,3070.2048,223680 GB (16 * 13980 GB NVMe HDD)
+d3en.xlarge,16.0,4,383.9800,27960 GB (2 * 13980 GB NVMe HDD)
+dl1.24xlarge,768.0,96,9569.5992,4000 GB (4 * 1000 GB NVMe SSD)
+f1.16xlarge,976.0,64,9636.0000,3760 GB (4 * 940 GB NVMe SSD)
+f1.2xlarge,122.0,8,1204.5000,470 GB NVMe SSD
+f1.4xlarge,244.0,16,2409.0000,940 GB NVMe SSD
+g2.2xlarge,15.0,8,474.5000,EBS only
+g2.8xlarge,60.0,32,1898.0000,EBS only
+g3.16xlarge,488.0,64,3328.8000,EBS only
+g3.4xlarge,122.0,16,832.2000,EBS only
+g3.8xlarge,244.0,32,1664.4000,EBS only
+g3s.xlarge,30.5,4,547.5000,EBS only
+g4ad.16xlarge,256.0,64,2531.6400,2400 GB (2 * 1200 GB NVMe SSD)
+g4ad.2xlarge,32.0,8,395.0541,300 GB NVMe SSD
+g4ad.4xlarge,64.0,16,632.9100,600 GB NVMe SSD
+g4ad.8xlarge,128.0,32,1265.8200,1200 GB NVMe SSD
+g4ad.xlarge,16.0,4,276.3269,150 GB NVMe SSD
+g4dn.12xlarge,192.0,48,2855.7600,900 GB NVMe SSD
+g4dn.16xlarge,256.0,64,3176.9600,900 GB NVMe SSD
+g4dn.2xlarge,32.0,8,548.9600,225 GB NVMe SSD
+g4dn.4xlarge,64.0,16,878.9200,225 GB NVMe SSD
+g4dn.8xlarge,128.0,32,1588.4800,900 GB NVMe SSD
+g4dn.metal,384.0,96,5711.5200,1800 GB (2 * 900 GB NVMe SSD)
+g4dn.xlarge,16.0,4,383.9800,125 GB NVMe SSD
+g5.12xlarge,192.0,48,4140.5600,3800 GB NVMe SSD
+g5.16xlarge,256.0,64,2990.0800,1900 GB NVMe SSD
+g5.24xlarge,384.0,96,5945.1200,3800 GB NVMe SSD
+g5.2xlarge,32.0,8,884.7600,450 GB NVMe SSD
+g5.48xlarge,768.0,192,11890.2400,7600 GB (2 * 3800 GB NVMe SSD)
+g5.4xlarge,64.0,16,1185.5200,600 GB NVMe SSD
+g5.8xlarge,128.0,32,1787.0400,900 GB NVMe SSD
+g5.xlarge,16.0,4,734.3800,250 GB NVMe SSD
+g5g.16xlarge,128.0,64,2003.1200,EBS only
+g5g.2xlarge,16.0,8,405.8800,EBS only
+g5g.4xlarge,32.0,16,604.4400,EBS only
+g5g.8xlarge,64.0,32,1001.5600,EBS only
+g5g.metal,128.0,64,2003.1200,EBS only
+g5g.xlarge,8.0,4,306.6000,EBS only
+g6.12xlarge,192.0,48,3359.1680,3760 GB (4 * 940 GB NVMe SSD)
+g6.16xlarge,256.0,64,2479.6640,1880 GB (2 * 940 GB NVMe SSD)
+g6.24xlarge,384.0,96,4872.8960,3760 GB (4 * 940 GB NVMe SSD)
+g6.2xlarge,32.0,8,713.6480,450 GB NVMe SSD
+g6.48xlarge,768.0,192,9745.7920,7520 GB (8 * 940 GB NVMe SSD)
+g6.4xlarge,64.0,16,965.9360,600 GB NVMe SSD
+g6.8xlarge,128.0,32,1470.5120,900 GB (2 * 450 GB NVMe SSD)
+g6.xlarge,16.0,4,587.5040,250 GB NVMe SSD
+g6e.12xlarge,384.0,48,7659.6272,3800 GB (2 * 1900 GB NVMe SSD)
+g6e.16xlarge,512.0,64,5531.3487,1900 GB (2 * 950 GB NVMe SSD)
+g6e.24xlarge,768.0,96,10997.8807,3800 GB (2 * 1900 GB NVMe SSD)
+g6e.2xlarge,64.0,8,1636.7184,450 GB NVMe SSD
+g6e.48xlarge,1536.0,192,21995.7614,7600 GB (4 * 1900 GB NVMe SSD)
+g6e.4xlarge,128.0,16,2193.0952,600 GB NVMe SSD
+g6e.8xlarge,256.0,32,3305.8488,900 GB (2 * 450 GB NVMe SSD)
+g6e.xlarge,32.0,4,1358.5300,250 GB NVMe SSD
+gr6.4xlarge,128.0,16,1123.6160,600 GB NVMe SSD
+gr6.8xlarge,256.0,32,1785.8720,900 GB (2 * 450 GB NVMe SSD)
+h1.16xlarge,256.0,64,2733.1200,16000 GB (8 * 2000 GB HDD)
+h1.2xlarge,32.0,8,341.6400,2000 GB HDD
+h1.4xlarge,64.0,16,683.2800,4000 GB (2 * 2000 GB HDD)
+h1.8xlarge,128.0,32,1366.5600,8000 GB (4 * 2000 GB HDD)
+hpc7g.16xlarge,128.0,64,1228.7360,EBS only
+hpc7g.4xlarge,128.0,16,1228.7360,EBS only
+hpc7g.8xlarge,128.0,32,1228.7360,EBS only
+i2.2xlarge,61.0,8,1244.6500,1600 GB (2 * 800 GB SSD)
+i2.4xlarge,122.0,16,2489.3000,3200 GB (4 * 800 GB SSD)
+i2.8xlarge,244.0,32,4978.6000,6400 GB (8 * 800 GB SSD)
+i2.xlarge,30.5,4,622.6900,800 GB SSD
+i3.16xlarge,488.0,64,3644.1600,15200 GB (8 * 1900 GB NVMe SSD)
+i3.2xlarge,61.0,8,455.5200,1900 GB NVMe SSD
+i3.4xlarge,122.0,16,911.0400,3800 GB (2 * 1900 GB NVMe SSD)
+i3.8xlarge,244.0,32,1822.0800,7600 GB (4 * 1900 GB NVMe SSD)
+i3.large,15.25,2,113.8800,475 GB NVMe SSD
+i3.metal,512.0,72,3644.1600,15200 GB (8 * 1900 GB NVMe SSD)
+i3.xlarge,30.5,4,227.7600,950 GB NVMe SSD
+i3en.12xlarge,384.0,48,3959.5200,30000 GB (4 * 7500 GB NVMe SSD)
+i3en.24xlarge,768.0,96,7919.0400,60000 GB (8 * 7500 GB NVMe SSD)
+i3en.2xlarge,64.0,8,659.9200,5000 GB (2 * 2500 GB NVMe SSD)
+i3en.3xlarge,96.0,12,989.8800,7500 GB NVMe SSD
+i3en.6xlarge,192.0,24,1979.7600,15000 GB (2 * 7500 GB NVMe SSD)
+i3en.large,16.0,2,164.9800,1250 GB NVMe SSD
+i3en.metal,768.0,96,7919.0400,60000 GB (8 * 7500 GB NVMe SSD)
+i3en.xlarge,32.0,4,329.9600,2500 GB NVMe SSD
+i4g.16xlarge,512.0,64,3607.7184,15000 GB (4 * 3750 GB NVMe SSD)
+i4g.2xlarge,64.0,8,450.9648,1875 GB NVMe SSD
+i4g.4xlarge,128.0,16,901.9296,3750 GB NVMe SSD
+i4g.8xlarge,256.0,32,1803.8592,7500 GB (2 * 3750 GB NVMe SSD)
+i4g.large,16.0,2,112.7412,468 GB NVMe SSD
+i4g.xlarge,32.0,4,225.4824,937 GB NVMe SSD
+i4i.12xlarge,384.0,48,3006.1400,11250 GB (3 * 3750 GB NVMe SSD)
+i4i.16xlarge,512.0,64,4008.4300,15000 GB (4 * 3750 GB NVMe SSD)
+i4i.24xlarge,768.0,96,6012.8640,22500 GB (6 * 3750 GB NVMe SSD)
+i4i.2xlarge,64.0,8,500.7800,1875 GB NVMe SSD
+i4i.32xlarge,1024.0,128,8017.1520,30000 GB (8 * 3750 GB NVMe SSD)
+i4i.4xlarge,128.0,16,1002.2900,3750 GB NVMe SSD
+i4i.8xlarge,256.0,32,2004.5800,7500 GB (2 * 3750 GB NVMe SSD)
+i4i.large,16.0,2,125.5600,468 GB NVMe SSD
+i4i.metal,1024.0,128,8016.8600,30000 GB (8 * 3750 GB NVMe SSD)
+i4i.xlarge,32.0,4,250.3900,937 GB NVMe SSD
+i7ie.12xlarge,384.0,48,4553.4480,30000 GB (4 * 7500 GB NVMe SSD)
+i7ie.18xlarge,576.0,72,6830.1720,45000 GB (6 * 7500 GB NVMe SSD)
+i7ie.24xlarge,768.0,96,9106.8960,60000 GB (8 * 7500 GB NVMe SSD)
+i7ie.2xlarge,64.0,8,758.9080,5000 GB (2 * 2500 GB NVMe SSD)
+i7ie.3xlarge,96.0,12,1138.3620,7500 GB NVMe SSD
+i7ie.48xlarge,1536.0,192,18213.7920,120000 GB (16 * 7500 GB NVMe SSD)
+i7ie.6xlarge,192.0,24,2276.7240,15000 GB (2 * 7500 GB NVMe SSD)
+i7ie.large,16.0,2,189.7270,1250 GB NVMe SSD
+i7ie.xlarge,32.0,4,379.4540,2500 GB NVMe SSD
+i8g.12xlarge,384.0,48,3006.4320,11250 GB (3 * 3750 GB NVMe SSD)
+i8g.16xlarge,512.0,64,4008.5760,15000 GB (4 * 3750 GB NVMe SSD)
+i8g.24xlarge,768.0,96,6012.8640,22500 GB (6 * 3750 GB NVMe SSD)
+i8g.2xlarge,64.0,8,501.0720,1875 GB NVMe SSD
+i8g.4xlarge,128.0,16,1002.1440,3750 GB NVMe SSD
+i8g.8xlarge,256.0,32,2004.2880,7500 GB (2 * 3750 GB NVMe SSD)
+i8g.large,16.0,2,125.2680,468 GB NVMe SSD
+i8g.metal-24xl,768.0,96,6012.8640,22500 GB (6 * 3750 GB NVMe SSD)
+i8g.xlarge,32.0,4,250.5360,937 GB NVMe SSD
+im4gn.16xlarge,256.0,64,4249.0891,30000 GB (4 * 7500 GB NVMe SSD)
+im4gn.2xlarge,32.0,8,531.1334,3750 GB NVMe SSD
+im4gn.4xlarge,64.0,16,1062.2741,7500 GB NVMe SSD
+im4gn.8xlarge,128.0,32,2124.5482,15000 GB (2 * 7500 GB NVMe SSD)
+im4gn.large,8.0,2,132.7870,937 GB NVMe SSD
+im4gn.xlarge,16.0,4,265.5667,1875 GB NVMe SSD
+inf1.24xlarge,192.0,96,3446.3300,EBS only
+inf1.2xlarge,16.0,8,264.2600,EBS only
+inf1.6xlarge,48.0,24,861.4000,EBS only
+inf1.xlarge,8.0,4,166.4400,EBS only
+inf2.24xlarge,384.0,96,4738.1599,EBS only
+inf2.48xlarge,768.0,192,9476.3271,EBS only
+inf2.8xlarge,128.0,32,1436.5378,EBS only
+inf2.xlarge,16.0,4,553.4860,EBS only
+is4gen.2xlarge,48.0,8,841.3980,7500 GB NVMe SSD
+is4gen.4xlarge,96.0,16,1682.7960,15000 GB (2 * 7500 GB NVMe SSD)
+is4gen.8xlarge,192.0,32,3365.5920,30000 GB (4 * 7500 GB NVMe SSD)
+is4gen.large,12.0,2,210.3495,1875 GB NVMe SSD
+is4gen.medium,6.0,1,105.1784,937 GB NVMe SSD
+is4gen.xlarge,24.0,4,420.6990,3750 GB NVMe SSD
+m1.large,7.5,2,127.7500,840 GB (2 * 420 GB HDD)
+m1.medium,3.75,1,63.5100,410 GB HDD
+m1.small,1.7,1,32.1200,160 GB HDD
+m1.xlarge,15.0,4,255.5000,1680 GB (4 * 420 GB HDD)
+m2.2xlarge,34.2,4,357.7000,850 GB HDD
+m2.4xlarge,68.4,8,715.4000,1680 GB (2 * 840 GB HDD)
+m2.xlarge,17.1,2,178.8500,420 GB HDD
+m3.2xlarge,30.0,8,388.3600,160 GB (2 * 80 GB SSD)
+m3.large,7.5,2,97.0900,32 GB SSD
+m3.medium,3.75,1,48.9100,4 GB SSD
+m3.xlarge,15.0,4,194.1800,80 GB (2 * 40 GB SSD)
+m4.10xlarge,160.0,40,1460.0000,EBS only
+m4.16xlarge,256.0,64,2336.0000,EBS only
+m4.2xlarge,32.0,8,292.0000,EBS only
+m4.4xlarge,64.0,16,584.0000,EBS only
+m4.large,8.0,2,73.0000,EBS only
+m4.xlarge,16.0,4,146.0000,EBS only
+m5.12xlarge,192.0,48,1681.9200,EBS only
+m5.16xlarge,256.0,64,2242.5600,EBS only
+m5.24xlarge,384.0,96,3363.8400,EBS only
+m5.2xlarge,32.0,8,280.3200,EBS only
+m5.4xlarge,64.0,16,560.6400,EBS only
+m5.8xlarge,128.0,32,1121.2800,EBS only
+m5.large,8.0,2,70.0800,EBS only
+m5.metal,384.0,96,3363.8400,EBS only
+m5.xlarge,16.0,4,140.1600,EBS only
+m5a.12xlarge,192.0,48,1506.7200,EBS only
+m5a.16xlarge,256.0,64,2008.9600,EBS only
+m5a.24xlarge,384.0,96,3013.4400,EBS only
+m5a.2xlarge,32.0,8,251.1200,EBS only
+m5a.4xlarge,64.0,16,502.2400,EBS only
+m5a.8xlarge,128.0,32,1004.4800,EBS only
+m5a.large,8.0,2,62.7800,EBS only
+m5a.xlarge,16.0,4,125.5600,EBS only
+m5ad.12xlarge,192.0,48,1804.5600,1800 GB (2 * 900 GB NVMe SSD)
+m5ad.16xlarge,256.0,64,2406.0800,2400 GB (4 * 600 GB NVMe SSD)
+m5ad.24xlarge,384.0,96,3609.1200,3600 GB (4 * 900 GB NVMe SSD)
+m5ad.2xlarge,32.0,8,300.7600,300 GB NVMe SSD
+m5ad.4xlarge,64.0,16,601.5200,600 GB (2 * 300 GB NVMe SSD)
+m5ad.8xlarge,128.0,32,1203.0400,1200 GB (2 * 600 GB NVMe SSD)
+m5ad.large,8.0,2,75.1900,75 GB NVMe SSD
+m5ad.xlarge,16.0,4,150.3800,150 GB NVMe SSD
+m5d.12xlarge,192.0,48,1979.7600,1800 GB (2 * 900 GB NVMe SSD)
+m5d.16xlarge,256.0,64,2639.6800,2400 GB (4 * 600 GB NVMe SSD)
+m5d.24xlarge,384.0,96,3959.5200,3600 GB (4 * 900 GB NVMe SSD)
+m5d.2xlarge,32.0,8,329.9600,300 GB NVMe SSD
+m5d.4xlarge,64.0,16,659.9200,600 GB (2 * 300 GB NVMe SSD)
+m5d.8xlarge,128.0,32,1319.8400,1200 GB (2 * 600 GB NVMe SSD)
+m5d.large,8.0,2,82.4900,75 GB NVMe SSD
+m5d.metal,384.0,96,3959.5200,3600 GB (4 * 900 GB NVMe SSD)
+m5d.xlarge,16.0,4,164.9800,150 GB NVMe SSD
+m5dn.12xlarge,192.0,48,2382.7200,1800 GB (2 * 900 GB NVMe SSD)
+m5dn.16xlarge,256.0,64,3176.9600,2400 GB (4 * 600 GB NVMe SSD)
+m5dn.24xlarge,384.0,96,4765.4400,3600 GB (4 * 900 GB NVMe SSD)
+m5dn.2xlarge,32.0,8,397.1200,300 GB NVMe SSD
+m5dn.4xlarge,64.0,16,794.2400,600 GB (2 * 300 GB NVMe SSD)
+m5dn.8xlarge,128.0,32,1588.4800,1200 GB (2 * 600 GB NVMe SSD)
+m5dn.large,8.0,2,99.2800,75 GB NVMe SSD
+m5dn.metal,384.0,96,4765.4400,3600 GB (4 * 900 GB NVMe SSD)
+m5dn.xlarge,16.0,4,198.5600,150 GB NVMe SSD
+m5n.12xlarge,192.0,48,2084.8800,EBS only
+m5n.16xlarge,256.0,64,2779.8400,EBS only
+m5n.24xlarge,384.0,96,4169.7600,EBS only
+m5n.2xlarge,32.0,8,347.4800,EBS only
+m5n.4xlarge,64.0,16,694.9600,EBS only
+m5n.8xlarge,128.0,32,1389.9200,EBS only
+m5n.large,8.0,2,86.8700,EBS only
+m5n.metal,384.0,96,4169.7600,EBS only
+m5n.xlarge,16.0,4,173.7400,EBS only
+m5zn.12xlarge,192.0,48,2893.7930,EBS only
+m5zn.2xlarge,32.0,8,482.3110,EBS only
+m5zn.3xlarge,48.0,12,723.4300,EBS only
+m5zn.6xlarge,96.0,24,1446.8600,EBS only
+m5zn.large,8.0,2,120.5960,EBS only
+m5zn.metal,192.0,48,2893.7930,EBS only
+m5zn.xlarge,16.0,4,241.1190,EBS only
+m6a.12xlarge,192.0,48,1513.7280,EBS only
+m6a.16xlarge,256.0,64,2018.3040,EBS only
+m6a.24xlarge,384.0,96,3027.4560,EBS only
+m6a.2xlarge,32.0,8,252.2880,EBS only
+m6a.32xlarge,512.0,128,4036.6080,EBS only
+m6a.48xlarge,768.0,192,6054.9120,EBS only
+m6a.4xlarge,64.0,16,504.5760,EBS only
+m6a.8xlarge,128.0,32,1009.1520,EBS only
+m6a.large,8.0,2,63.0720,EBS only
+m6a.metal,768.0,192,6054.9120,EBS only
+m6a.xlarge,16.0,4,126.1440,EBS only
+m6g.12xlarge,192.0,48,1349.0400,EBS only
+m6g.16xlarge,256.0,64,1798.7200,EBS only
+m6g.2xlarge,32.0,8,224.8400,EBS only
+m6g.4xlarge,64.0,16,449.6800,EBS only
+m6g.8xlarge,128.0,32,899.3600,EBS only
+m6g.large,8.0,2,56.2100,EBS only
+m6g.medium,4.0,1,28.1050,EBS only
+m6g.metal,256.0,64,1798.7200,EBS only
+m6g.xlarge,16.0,4,112.4200,EBS only
+m6gd.12xlarge,192.0,48,1583.8080,2850 GB (2 * 1425 GB NVMe SSD)
+m6gd.16xlarge,256.0,64,2111.7440,3800 GB (2 * 1900 GB NVMe SSD)
+m6gd.2xlarge,32.0,8,263.9680,474 GB NVMe SSD
+m6gd.4xlarge,64.0,16,527.9360,950 GB NVMe SSD
+m6gd.8xlarge,128.0,32,1055.8720,1900 GB NVMe SSD
+m6gd.large,8.0,2,65.9920,118 GB NVMe SSD
+m6gd.medium,4.0,1,32.9960,59 GB NVMe SSD
+m6gd.metal,256.0,64,2111.7440,3800 GB (2 * 1900 GB NVMe SSD)
+m6gd.xlarge,16.0,4,131.9840,237 GB NVMe SSD
+m6i.12xlarge,192.0,48,1681.9200,EBS only
+m6i.16xlarge,256.0,64,2242.5600,EBS only
+m6i.24xlarge,384.0,96,3363.8400,EBS only
+m6i.2xlarge,32.0,8,280.3200,EBS only
+m6i.32xlarge,512.0,128,4485.1200,EBS only
+m6i.4xlarge,64.0,16,560.6400,EBS only
+m6i.8xlarge,128.0,32,1121.2800,EBS only
+m6i.large,8.0,2,70.0800,EBS only
+m6i.metal,512.0,128,4485.1200,EBS only
+m6i.xlarge,16.0,4,140.1600,EBS only
+m6id.12xlarge,192.0,48,2078.7480,2850 GB (2 * 1425 GB NVMe SSD)
+m6id.16xlarge,256.0,64,2771.6640,3800 GB (2 * 1900 GB NVMe SSD)
+m6id.24xlarge,384.0,96,4157.4960,5700 GB (4 * 1425 GB NVMe SSD)
+m6id.2xlarge,32.0,8,346.4580,474 GB NVMe SSD
+m6id.32xlarge,512.0,128,5543.3280,7600 GB (4 * 1900 GB NVMe SSD)
+m6id.4xlarge,64.0,16,692.9160,950 GB NVMe SSD
+m6id.8xlarge,128.0,32,1385.8320,1900 GB NVMe SSD
+m6id.large,8.0,2,86.6145,118 GB NVMe SSD
+m6id.metal,512.0,128,5543.3280,7600 GB (4 * 1900 GB NVMe SSD)
+m6id.xlarge,16.0,4,173.2290,237 GB NVMe SSD
+m6idn.12xlarge,192.0,48,2787.7824,2850 GB (2 * 1425 GB NVMe SSD)
+m6idn.16xlarge,256.0,64,3717.0432,3800 GB (2 * 1900 GB NVMe SSD)
+m6idn.24xlarge,384.0,96,5575.5648,5700 GB (4 * 1425 GB NVMe SSD)
+m6idn.2xlarge,32.0,8,464.6304,474 GB NVMe SSD
+m6idn.32xlarge,512.0,128,7434.0864,7600 GB (4 * 1900 GB NVMe SSD)
+m6idn.4xlarge,64.0,16,929.2608,950 GB NVMe SSD
+m6idn.8xlarge,128.0,32,1858.5216,1900 GB NVMe SSD
+m6idn.large,8.0,2,116.1576,118 GB NVMe SSD
+m6idn.metal,512.0,128,7434.0864,7600 GB (4 * 1900 GB NVMe SSD)
+m6idn.xlarge,16.0,4,232.3152,237 GB NVMe SSD
+m6in.12xlarge,192.0,48,2439.3096,EBS only
+m6in.16xlarge,256.0,64,3252.4128,EBS only
+m6in.24xlarge,384.0,96,4878.6192,EBS only
+m6in.2xlarge,32.0,8,406.5516,EBS only
+m6in.32xlarge,512.0,128,6504.8256,EBS only
+m6in.4xlarge,64.0,16,813.1032,EBS only
+m6in.8xlarge,128.0,32,1626.2064,EBS only
+m6in.large,8.0,2,101.6379,EBS only
+m6in.metal,512.0,128,6504.8256,EBS only
+m6in.xlarge,16.0,4,203.2758,EBS only
+m7a.12xlarge,192.0,48,2030.9184,EBS only
+m7a.16xlarge,256.0,64,2707.8912,EBS only
+m7a.24xlarge,384.0,96,4061.8368,EBS only
+m7a.2xlarge,32.0,8,338.4864,EBS only
+m7a.32xlarge,512.0,128,5415.7824,EBS only
+m7a.48xlarge,768.0,192,8123.6736,EBS only
+m7a.4xlarge,64.0,16,676.9728,EBS only
+m7a.8xlarge,128.0,32,1353.9456,EBS only
+m7a.large,8.0,2,84.6216,EBS only
+m7a.medium,4.0,1,42.3108,EBS only
+m7a.metal-48xl,768.0,192,8123.6736,EBS only
+m7a.xlarge,16.0,4,169.2432,EBS only
+m7g.12xlarge,192.0,48,1429.6320,EBS only
+m7g.16xlarge,256.0,64,1906.1760,EBS only
+m7g.2xlarge,32.0,8,238.2720,EBS only
+m7g.4xlarge,64.0,16,476.5440,EBS only
+m7g.8xlarge,128.0,32,953.0880,EBS only
+m7g.large,8.0,2,59.5680,EBS only
+m7g.medium,4.0,1,29.7840,EBS only
+m7g.metal,256.0,64,1906.1760,EBS only
+m7g.xlarge,16.0,4,119.1360,EBS only
+m7gd.12xlarge,192.0,48,1870.8440,2850 GB (2 * 1425 GB NVMe SSD)
+m7gd.16xlarge,256.0,64,2494.4830,3800 GB (2 * 1900 GB NVMe SSD)
+m7gd.2xlarge,32.0,8,311.7830,474 GB NVMe SSD
+m7gd.4xlarge,64.0,16,623.6390,950 GB NVMe SSD
+m7gd.8xlarge,128.0,32,1247.2780,1900 GB NVMe SSD
+m7gd.large,8.0,2,77.9640,118 GB NVMe SSD
+m7gd.medium,4.0,1,38.9820,59 GB NVMe SSD
+m7gd.metal,256.0,64,2494.4830,3800 GB (2 * 1900 GB NVMe SSD)
+m7gd.xlarge,16.0,4,155.9280,237 GB NVMe SSD
+m7i-flex.2xlarge,32.0,8,279.6192,EBS only
+m7i-flex.4xlarge,64.0,16,559.2384,EBS only
+m7i-flex.8xlarge,128.0,32,1118.4768,EBS only
+m7i-flex.large,8.0,2,69.9048,EBS only
+m7i-flex.xlarge,16.0,4,139.8096,EBS only
+m7i.12xlarge,192.0,48,1766.0160,EBS only
+m7i.16xlarge,256.0,64,2354.6880,EBS only
+m7i.24xlarge,384.0,96,3532.0320,EBS only
+m7i.2xlarge,32.0,8,294.3360,EBS only
+m7i.48xlarge,768.0,192,7064.0640,EBS only
+m7i.4xlarge,64.0,16,588.6720,EBS only
+m7i.8xlarge,128.0,32,1177.3440,EBS only
+m7i.large,8.0,2,73.5840,EBS only
+m7i.metal-24xl,384.0,96,3532.0320,EBS only
+m7i.metal-48xl,768.0,192,7064.0640,EBS only
+m7i.xlarge,16.0,4,147.1680,EBS only
+m8g.12xlarge,192.0,48,1572.5952,EBS only
+m8g.16xlarge,256.0,64,2096.7936,EBS only
+m8g.24xlarge,384.0,96,3145.1904,EBS only
+m8g.2xlarge,32.0,8,262.0992,EBS only
+m8g.48xlarge,768.0,192,6290.3808,EBS only
+m8g.4xlarge,64.0,16,524.1984,EBS only
+m8g.8xlarge,128.0,32,1048.3968,EBS only
+m8g.large,8.0,2,65.5248,EBS only
+m8g.medium,4.0,1,32.7624,EBS only
+m8g.metal-24xl,384.0,96,3145.1904,EBS only
+m8g.metal-48xl,768.0,192,6290.3808,EBS only
+m8g.xlarge,16.0,4,131.0496,EBS only
+p2.16xlarge,732.0,64,10512.0000,EBS only
+p2.8xlarge,488.0,32,5256.0000,EBS only
+p2.xlarge,61.0,4,657.0000,EBS only
+p3.16xlarge,488.0,64,17870.4000,EBS only
+p3.2xlarge,61.0,8,2233.8000,EBS only
+p3.8xlarge,244.0,32,8935.2000,EBS only
+p3dn.24xlarge,768.0,96,22784.7600,1800 GB (2 * 900 GB NVMe SSD)
+p4d.24xlarge,1152.0,96,23923.9980,8000 GB (8 * 1000 GB NVMe SSD)
+p4de.24xlarge,1152.0,96,29904.9975,EBS only
+p5.48xlarge,2048.0,192,71773.6000,30400 GB (8 * 3800 GB NVMe SSD)
+r3.2xlarge,61.0,8,485.4500,160 GB SSD
+r3.4xlarge,122.0,16,970.9000,320 GB SSD
+r3.8xlarge,244.0,32,1941.8000,640 GB (2 * 320 GB SSD)
+r3.large,15.25,2,121.1800,32 GB SSD
+r3.xlarge,30.5,4,243.0900,80 GB SSD
+r4.16xlarge,488.0,64,3106.8800,EBS only
+r4.2xlarge,61.0,8,388.3600,EBS only
+r4.4xlarge,122.0,16,776.7200,EBS only
+r4.8xlarge,244.0,32,1553.4400,EBS only
+r4.large,15.25,2,97.0900,EBS only
+r4.xlarge,30.5,4,194.1800,EBS only
+r5.12xlarge,384.0,48,2207.5200,EBS only
+r5.16xlarge,512.0,64,2943.3600,EBS only
+r5.24xlarge,768.0,96,4415.0400,EBS only
+r5.2xlarge,64.0,8,367.9200,EBS only
+r5.4xlarge,128.0,16,735.8400,EBS only
+r5.8xlarge,256.0,32,1471.6800,EBS only
+r5.large,16.0,2,91.9800,EBS only
+r5.metal,768.0,96,4415.0400,EBS only
+r5.xlarge,32.0,4,183.9600,EBS only
+r5a.12xlarge,384.0,48,1979.7600,EBS only
+r5a.16xlarge,512.0,64,2639.6800,EBS only
+r5a.24xlarge,768.0,96,3959.5200,EBS only
+r5a.2xlarge,64.0,8,329.9600,EBS only
+r5a.4xlarge,128.0,16,659.9200,EBS only
+r5a.8xlarge,256.0,32,1319.8400,EBS only
+r5a.large,16.0,2,82.4900,EBS only
+r5a.xlarge,32.0,4,164.9800,EBS only
+r5ad.12xlarge,384.0,48,2295.1200,1800 GB (2 * 900 GB NVMe SSD)
+r5ad.16xlarge,512.0,64,3060.1600,2400 GB (4 * 600 GB NVMe SSD)
+r5ad.24xlarge,768.0,96,4590.2400,3600 GB (4 * 900 GB NVMe SSD)
+r5ad.2xlarge,64.0,8,382.5200,300 GB NVMe SSD
+r5ad.4xlarge,128.0,16,765.0400,600 GB (2 * 300 GB NVMe SSD)
+r5ad.8xlarge,256.0,32,1530.0800,1200 GB (2 * 600 GB NVMe SSD)
+r5ad.large,16.0,2,95.6300,75 GB NVMe SSD
+r5ad.xlarge,32.0,4,191.2600,150 GB NVMe SSD
+r5b.12xlarge,384.0,48,2610.4800,EBS only
+r5b.16xlarge,512.0,64,3480.6400,EBS only
+r5b.24xlarge,768.0,96,5220.9600,EBS only
+r5b.2xlarge,64.0,8,435.0800,EBS only
+r5b.4xlarge,128.0,16,870.1600,EBS only
+r5b.8xlarge,256.0,32,1740.3200,EBS only
+r5b.large,16.0,2,108.7700,EBS only
+r5b.metal,768.0,96,5220.9600,EBS only
+r5b.xlarge,32.0,4,217.5400,EBS only
+r5d.12xlarge,384.0,48,2522.8800,1800 GB (2 * 900 GB NVMe SSD)
+r5d.16xlarge,512.0,64,3363.8400,2400 GB (4 * 600 GB NVMe SSD)
+r5d.24xlarge,768.0,96,5045.7600,3600 GB (4 * 900 GB NVMe SSD)
+r5d.2xlarge,64.0,8,420.4800,300 GB NVMe SSD
+r5d.4xlarge,128.0,16,840.9600,600 GB (2 * 300 GB NVMe SSD)
+r5d.8xlarge,256.0,32,1681.9200,1200 GB (2 * 600 GB NVMe SSD)
+r5d.large,16.0,2,105.1200,75 GB NVMe SSD
+r5d.metal,768.0,96,5045.7600,3600 GB (4 * 900 GB NVMe SSD)
+r5d.xlarge,32.0,4,210.2400,150 GB NVMe SSD
+r5dn.12xlarge,384.0,48,2925.8400,1800 GB (2 * 900 GB NVMe SSD)
+r5dn.16xlarge,512.0,64,3901.1200,2400 GB (4 * 600 GB NVMe SSD)
+r5dn.24xlarge,768.0,96,5851.6800,3600 GB (4 * 900 GB NVMe SSD)
+r5dn.2xlarge,64.0,8,487.6400,300 GB NVMe SSD
+r5dn.4xlarge,128.0,16,975.2800,600 GB (2 * 300 GB NVMe SSD)
+r5dn.8xlarge,256.0,32,1950.5600,1200 GB (2 * 600 GB NVMe SSD)
+r5dn.large,16.0,2,121.9100,75 GB NVMe SSD
+r5dn.metal,768.0,96,5851.6800,3600 GB (4 * 900 GB NVMe SSD)
+r5dn.xlarge,32.0,4,243.8200,150 GB NVMe SSD
+r5n.12xlarge,384.0,48,2610.4800,EBS only
+r5n.16xlarge,512.0,64,3480.6400,EBS only
+r5n.24xlarge,768.0,96,5220.9600,EBS only
+r5n.2xlarge,64.0,8,435.0800,EBS only
+r5n.4xlarge,128.0,16,870.1600,EBS only
+r5n.8xlarge,256.0,32,1740.3200,EBS only
+r5n.large,16.0,2,108.7700,EBS only
+r5n.metal,768.0,96,5220.9600,EBS only
+r5n.xlarge,32.0,4,217.5400,EBS only
+r6a.12xlarge,384.0,48,1986.7680,EBS only
+r6a.16xlarge,512.0,64,2649.0240,EBS only
+r6a.24xlarge,768.0,96,3973.5360,EBS only
+r6a.2xlarge,64.0,8,331.1280,EBS only
+r6a.32xlarge,1024.0,128,5298.0480,EBS only
+r6a.48xlarge,1536.0,192,7947.0720,EBS only
+r6a.4xlarge,128.0,16,662.2560,EBS only
+r6a.8xlarge,256.0,32,1324.5120,EBS only
+r6a.large,16.0,2,82.7820,EBS only
+r6a.metal,1536.0,192,7947.0720,EBS only
+r6a.xlarge,32.0,4,165.5640,EBS only
+r6g.12xlarge,384.0,48,1766.0160,EBS only
+r6g.16xlarge,512.0,64,2354.6880,EBS only
+r6g.2xlarge,64.0,8,294.3360,EBS only
+r6g.4xlarge,128.0,16,588.6720,EBS only
+r6g.8xlarge,256.0,32,1177.3440,EBS only
+r6g.large,16.0,2,73.5840,EBS only
+r6g.medium,8.0,1,36.7920,EBS only
+r6g.metal,512.0,64,2354.6880,EBS only
+r6g.xlarge,32.0,4,147.1680,EBS only
+r6gd.12xlarge,384.0,48,2018.3040,2850 GB (2 * 1425 GB NVMe SSD)
+r6gd.16xlarge,512.0,64,2691.0720,3800 GB (2 * 1900 GB NVMe SSD)
+r6gd.2xlarge,64.0,8,336.3840,474 GB NVMe SSD
+r6gd.4xlarge,128.0,16,672.7680,950 GB NVMe SSD
+r6gd.8xlarge,256.0,32,1345.5360,1900 GB NVMe SSD
+r6gd.large,16.0,2,84.0960,118 GB NVMe SSD
+r6gd.medium,8.0,1,42.0480,59 GB NVMe SSD
+r6gd.metal,512.0,64,2691.0720,3800 GB (2 * 1900 GB NVMe SSD)
+r6gd.xlarge,32.0,4,168.1920,237 GB NVMe SSD
+r6i.12xlarge,384.0,48,2207.5200,EBS only
+r6i.16xlarge,512.0,64,2943.3600,EBS only
+r6i.24xlarge,768.0,96,4415.0400,EBS only
+r6i.2xlarge,64.0,8,367.9200,EBS only
+r6i.32xlarge,1024.0,128,5886.7200,EBS only
+r6i.4xlarge,128.0,16,735.8400,EBS only
+r6i.8xlarge,256.0,32,1471.6800,EBS only
+r6i.large,16.0,2,91.9800,EBS only
+r6i.metal,1024.0,128,5886.7200,EBS only
+r6i.xlarge,32.0,4,183.9600,EBS only
+r6id.12xlarge,384.0,48,2649.0240,2850 GB (2 * 1425 GB NVMe SSD)
+r6id.16xlarge,512.0,64,3532.0320,3800 GB (2 * 1900 GB NVMe SSD)
+r6id.24xlarge,768.0,96,5298.0480,5700 GB (4 * 1425 GB NVMe SSD)
+r6id.2xlarge,64.0,8,441.5040,474 GB NVMe SSD
+r6id.32xlarge,1024.0,128,7064.0640,7600 GB (4 * 1900 GB NVMe SSD)
+r6id.4xlarge,128.0,16,883.0080,950 GB NVMe SSD
+r6id.8xlarge,256.0,32,1766.0160,1900 GB NVMe SSD
+r6id.large,16.0,2,110.3760,118 GB NVMe SSD
+r6id.metal,1024.0,128,7064.0640,7600 GB (4 * 1900 GB NVMe SSD)
+r6id.xlarge,32.0,4,220.7520,237 GB NVMe SSD
+r6idn.12xlarge,384.0,48,3423.2328,2850 GB (2 * 1425 GB NVMe SSD)
+r6idn.16xlarge,512.0,64,4564.3104,3800 GB (2 * 1900 GB NVMe SSD)
+r6idn.24xlarge,768.0,96,6846.4656,5700 GB (4 * 1425 GB NVMe SSD)
+r6idn.2xlarge,64.0,8,570.5388,474 GB NVMe SSD
+r6idn.32xlarge,1024.0,128,9128.6208,7600 GB (4 * 1900 GB NVMe SSD)
+r6idn.4xlarge,128.0,16,1141.0776,950 GB NVMe SSD
+r6idn.8xlarge,256.0,32,2282.1552,1900 GB NVMe SSD
+r6idn.large,16.0,2,142.6347,118 GB NVMe SSD
+r6idn.metal,1024.0,128,9128.6208,7600 GB (4 * 1900 GB NVMe SSD)
+r6idn.xlarge,32.0,4,285.2694,237 GB NVMe SSD
+r6in.12xlarge,384.0,48,3054.2616,EBS only
+r6in.16xlarge,512.0,64,4072.3488,EBS only
+r6in.24xlarge,768.0,96,6108.5232,EBS only
+r6in.2xlarge,64.0,8,509.0436,EBS only
+r6in.32xlarge,1024.0,128,8144.6976,EBS only
+r6in.4xlarge,128.0,16,1018.0872,EBS only
+r6in.8xlarge,256.0,32,2036.1744,EBS only
+r6in.large,16.0,2,127.2609,EBS only
+r6in.metal,1024.0,128,8144.6976,EBS only
+r6in.xlarge,32.0,4,254.5218,EBS only
+r7a.12xlarge,384.0,48,2665.6680,EBS only
+r7a.16xlarge,512.0,64,3554.2240,EBS only
+r7a.24xlarge,768.0,96,5331.3360,EBS only
+r7a.2xlarge,64.0,8,444.2780,EBS only
+r7a.32xlarge,1024.0,128,7108.4480,EBS only
+r7a.48xlarge,1536.0,192,10662.6720,EBS only
+r7a.4xlarge,128.0,16,888.5560,EBS only
+r7a.8xlarge,256.0,32,1777.1120,EBS only
+r7a.large,16.0,2,111.0695,EBS only
+r7a.medium,8.0,1,55.5384,EBS only
+r7a.metal-48xl,1536.0,192,10662.6720,EBS only
+r7a.xlarge,32.0,4,222.1390,EBS only
+r7g.12xlarge,384.0,48,1876.3920,EBS only
+r7g.16xlarge,512.0,64,2501.8560,EBS only
+r7g.2xlarge,64.0,8,312.7320,EBS only
+r7g.4xlarge,128.0,16,625.4640,EBS only
+r7g.8xlarge,256.0,32,1250.9280,EBS only
+r7g.large,16.0,2,78.1830,EBS only
+r7g.medium,8.0,1,39.1280,EBS only
+r7g.metal,512.0,64,2501.8560,EBS only
+r7g.xlarge,32.0,4,156.3660,EBS only
+r7gd.12xlarge,384.0,48,2384.1070,2850 GB (2 * 1425 GB NVMe SSD)
+r7gd.16xlarge,512.0,64,3178.8580,3800 GB (2 * 1900 GB NVMe SSD)
+r7gd.2xlarge,64.0,8,397.3390,474 GB NVMe SSD
+r7gd.4xlarge,128.0,16,794.6780,950 GB NVMe SSD
+r7gd.8xlarge,256.0,32,1589.4290,1900 GB NVMe SSD
+r7gd.large,16.0,2,99.3530,118 GB NVMe SSD
+r7gd.medium,8.0,1,49.6400,59 GB NVMe SSD
+r7gd.metal,512.0,64,3178.8580,3800 GB (2 * 1900 GB NVMe SSD)
+r7gd.xlarge,32.0,4,198.7060,237 GB NVMe SSD
+r7i.12xlarge,384.0,48,2317.8960,EBS only
+r7i.16xlarge,512.0,64,3090.5280,EBS only
+r7i.24xlarge,768.0,96,4635.7920,EBS only
+r7i.2xlarge,64.0,8,386.3160,EBS only
+r7i.48xlarge,1536.0,192,9271.5840,EBS only
+r7i.4xlarge,128.0,16,772.6320,EBS only
+r7i.8xlarge,256.0,32,1545.2640,EBS only
+r7i.large,16.0,2,96.5790,EBS only
+r7i.metal-24xl,768.0,96,4635.7920,EBS only
+r7i.metal-48xl,1536.0,192,9271.5840,EBS only
+r7i.xlarge,32.0,4,193.1580,EBS only
+r7iz.12xlarge,384.0,48,3258.7200,EBS only
+r7iz.16xlarge,512.0,64,4344.9600,EBS only
+r7iz.2xlarge,64.0,8,543.1200,EBS only
+r7iz.32xlarge,1024.0,128,8689.9200,EBS only
+r7iz.4xlarge,128.0,16,1086.2400,EBS only
+r7iz.8xlarge,256.0,32,2172.4800,EBS only
+r7iz.large,16.0,2,135.7800,EBS only
+r7iz.metal-16xl,512.0,64,4344.9600,EBS only
+r7iz.metal-32xl,1024.0,128,8689.9200,EBS only
+r7iz.xlarge,32.0,4,271.5600,EBS only
+r8g.12xlarge,384.0,48,2064.2064,EBS only
+r8g.16xlarge,512.0,64,2752.2752,EBS only
+r8g.24xlarge,768.0,96,4128.4128,EBS only
+r8g.2xlarge,64.0,8,344.0344,EBS only
+r8g.48xlarge,1536.0,192,8256.8256,EBS only
+r8g.4xlarge,128.0,16,688.0688,EBS only
+r8g.8xlarge,256.0,32,1376.1376,EBS only
+r8g.large,16.0,2,86.0086,EBS only
+r8g.medium,8.0,1,43.0043,EBS only
+r8g.metal-24xl,768.0,96,4128.4128,EBS only
+r8g.metal-48xl,1536.0,192,8256.8256,EBS only
+r8g.xlarge,32.0,4,172.0172,EBS only
+t1.micro,0.613,1,14.6000,EBS only
+t2.2xlarge,32.0,8,270.9760,EBS only
+t2.large,8.0,2,67.7440,EBS only
+t2.medium,4.0,2,33.8720,EBS only
+t2.micro,1.0,1,8.4680,EBS only
+t2.nano,0.5,1,4.2340,EBS only
+t2.small,2.0,1,16.7900,EBS only
+t2.xlarge,16.0,4,135.4880,EBS only
+t3.2xlarge,32.0,8,242.9440,EBS only
+t3.large,8.0,2,60.7360,EBS only
+t3.medium,4.0,2,30.3680,EBS only
+t3.micro,1.0,2,7.5920,EBS only
+t3.nano,0.5,2,3.7960,EBS only
+t3.small,2.0,2,15.1840,EBS only
+t3.xlarge,16.0,4,121.4720,EBS only
+t3a.2xlarge,32.0,8,219.5840,EBS only
+t3a.large,8.0,2,54.8960,EBS only
+t3a.medium,4.0,2,27.4480,EBS only
+t3a.micro,1.0,2,6.8620,EBS only
+t3a.nano,0.5,2,3.4310,EBS only
+t3a.small,2.0,2,13.7240,EBS only
+t3a.xlarge,16.0,4,109.7920,EBS only
+t4g.2xlarge,32.0,8,196.2240,EBS only
+t4g.large,8.0,2,49.0560,EBS only
+t4g.medium,4.0,2,24.5280,EBS only
+t4g.micro,1.0,2,6.1320,EBS only
+t4g.nano,0.5,2,3.0660,EBS only
+t4g.small,2.0,2,12.2640,EBS only
+t4g.xlarge,16.0,4,98.1120,EBS only
+trn1.2xlarge,32.0,8,980.9375,474 GB NVMe SSD
+trn1.32xlarge,512.0,128,15695.0000,7600 GB (4 * 1900 GB NVMe SSD)
+trn1n.32xlarge,512.0,128,18089.4000,7600 GB (4 * 1900 GB NVMe SSD)
+u-12tb1.112xlarge,12288.0,448,79716.0000,EBS only
+u-18tb1.112xlarge,18432.0,448,119574.0000,EBS only
+u-24tb1.112xlarge,24576.0,448,159432.0000,EBS only
+u-3tb1.56xlarge,3072.0,224,19929.0000,EBS only
+u-6tb1.112xlarge,6144.0,448,39858.0000,EBS only
+u-6tb1.56xlarge,6144.0,224,33874.8543,EBS only
+u-9tb1.112xlarge,9216.0,448,59787.0000,EBS only
+u7i-12tb.224xlarge,12288.0,896,111602.4000,EBS only
+u7in-16tb.224xlarge,16384.0,896,148803.2000,EBS only
+u7in-24tb.224xlarge,24576.0,896,223204.8000,EBS only
+u7in-32tb.224xlarge,32768.0,896,297606.4000,EBS only
+vt1.24xlarge,192.0,96,3796.0000,EBS only
+vt1.3xlarge,24.0,12,474.5000,EBS only
+vt1.6xlarge,48.0,24,949.0000,EBS only
+x1.16xlarge,976.0,64,4868.3700,1920 GB SSD
+x1.32xlarge,1952.0,128,9736.7400,3840 GB (2 * 1920 GB SSD)
+x1e.16xlarge,1952.0,64,9741.1200,1920 GB SSD
+x1e.2xlarge,244.0,8,1217.6400,240 GB SSD
+x1e.32xlarge,3904.0,128,19482.2400,3840 GB (2 * 1920 GB SSD)
+x1e.4xlarge,488.0,16,2435.2800,480 GB SSD
+x1e.8xlarge,976.0,32,4870.5600,960 GB SSD
+x1e.xlarge,122.0,4,608.8200,120 GB SSD
+x2gd.12xlarge,768.0,48,2925.8400,2850 GB (2 * 1425 GB NVMe SSD)
+x2gd.16xlarge,1024.0,64,3901.1200,3800 GB (2 * 1900 GB NVMe SSD)
+x2gd.2xlarge,128.0,8,487.6400,475 GB NVMe SSD
+x2gd.4xlarge,256.0,16,975.2800,950 GB NVMe SSD
+x2gd.8xlarge,512.0,32,1950.5600,1900 GB NVMe SSD
+x2gd.large,32.0,2,121.9100,118 GB NVMe SSD
+x2gd.medium,16.0,1,60.9550,59 GB NVMe SSD
+x2gd.metal,1024.0,64,3901.1200,3800 GB (2 * 1900 GB NVMe SSD)
+x2gd.xlarge,64.0,4,243.8200,237 GB NVMe SSD
+x2idn.16xlarge,1024.0,64,4868.3700,1900 GB NVMe SSD
+x2idn.24xlarge,1536.0,96,7302.5550,2850 GB (2 * 1425 GB NVMe SSD)
+x2idn.32xlarge,2048.0,128,9736.7400,3800 GB (2 * 1900 GB NVMe SSD)
+x2idn.metal,2048.0,128,9736.7400,3800 GB (2 * 1900 GB NVMe SSD)
+x2iedn.16xlarge,2048.0,64,9736.7400,1900 GB NVMe SSD
+x2iedn.24xlarge,3072.0,96,14605.1100,2850 GB (2 * 1425 GB NVMe SSD)
+x2iedn.2xlarge,256.0,8,1217.0925,237 GB NVMe SSD
+x2iedn.32xlarge,4096.0,128,19473.4800,3800 GB (2 * 1900 GB NVMe SSD)
+x2iedn.4xlarge,512.0,16,2434.1850,475 GB NVMe SSD
+x2iedn.8xlarge,1024.0,32,4868.3700,950 GB NVMe SSD
+x2iedn.metal,4096.0,128,19473.4800,3800 GB (2 * 1900 GB NVMe SSD)
+x2iedn.xlarge,128.0,4,608.5499,118 GB NVMe SSD
+x2iezn.12xlarge,1536.0,48,7305.8400,EBS only
+x2iezn.2xlarge,256.0,8,1217.6400,EBS only
+x2iezn.4xlarge,512.0,16,2435.2800,EBS only
+x2iezn.6xlarge,768.0,24,3652.9200,EBS only
+x2iezn.8xlarge,1024.0,32,4870.5600,EBS only
+x2iezn.metal,1536.0,48,7305.8400,EBS only
+x8g.12xlarge,768.0,48,3423.4080,EBS only
+x8g.16xlarge,1024.0,64,4564.5440,EBS only
+x8g.24xlarge,1536.0,96,6846.8160,EBS only
+x8g.2xlarge,128.0,8,570.5680,EBS only
+x8g.48xlarge,3072.0,192,13693.6320,EBS only
+x8g.4xlarge,256.0,16,1141.1360,EBS only
+x8g.8xlarge,512.0,32,2282.2720,EBS only
+x8g.large,32.0,2,142.6420,EBS only
+x8g.medium,16.0,1,71.3210,EBS only
+x8g.metal-24xl,1536.0,96,6846.8160,EBS only
+x8g.metal-48xl,3072.0,192,13693.6320,EBS only
+x8g.xlarge,64.0,4,285.2840,EBS only
+z1d.12xlarge,384.0,48,3258.7200,1800 GB (2 * 900 GB NVMe SSD)
+z1d.2xlarge,64.0,8,543.1200,300 GB NVMe SSD
+z1d.3xlarge,96.0,12,814.6800,450 GB NVMe SSD
+z1d.6xlarge,192.0,24,1629.3600,900 GB NVMe SSD
+z1d.large,16.0,2,135.7800,75 GB NVMe SSD
+z1d.metal,384.0,48,3258.7200,1800 GB (2 * 900 GB NVMe SSD)
+z1d.xlarge,32.0,4,271.5600,150 GB NVMe SSD

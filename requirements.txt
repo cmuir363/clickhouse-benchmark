@@ -8,3 +8,4 @@ mypy==1.13.0
 types-requests==2.32.0.20241016
 polars==1.14.0
 typer==0.13.1
+altair==5.5.0

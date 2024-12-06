@@ -1,6 +1,38 @@
 # polars isn't overkill, what are you talking about?
 # Methodology https://github.com/ClickHouse/ClickBench?tab=readme-ov-file#results-usage-and-scoreboards
+import importlib.resources as pkg_resources
+
+import altair
 import polars as pl
+
+EBS_MONTHLY_COST = 80.0
+
+PLAN_INSTANCE_LOOKUP = {
+    "internal-arm-block-storage-16": "m8g.xlarge",
+    "internal-arm-block-storage-32": "m8g.2xlarge",
+    "internal-arm-block-storage-64": "m8g.4xlarge",
+    "internal-arm-block-storage-128": "m8g.8xlarge",
+    "internal-block-storage-16": "m7i.xlarge",
+    "internal-block-storage-32": "m7i.2xlarge",
+    "internal-block-storage-64": "m7i.4xlarge",
+    "internal-block-storage-128": "m7i.8xlarge",
+    "internal-storage-optimized-16": "i7ie.large",
+    "internal-storage-optimized-32": "i7ie.xlarge",
+    "internal-storage-optimized-64": "i7ie.2xlarge",
+    "internal-arm-storage-optimized-16": "i8g.large",
+    "internal-arm-storage-optimized-32": "i8g.xlarge",
+    "internal-arm-storage-optimized-64": "i8g.2xlarge",
+    "business-16": "i3en.large",
+    "business-32": "i3en.xlarge",
+    "business-64": "i3en.2xlarge",
+}
+
+PLAN_LOOKUP_SCHEMA = pl.Schema(
+    {
+        "plan": pl.String,
+        "instance": pl.String,
+    }
+)
 
 SCHEMA = pl.Schema(
     {
@@ -24,9 +56,41 @@ SCHEMA = pl.Schema(
 )
 
 
-def perform_analysis() -> None:
+PRICING_SCHEMA = pl.Schema(
+    {
+        "instance": pl.String,
+        "memory_gb": pl.Float64,
+        "vcpus": pl.Int64,
+        "price_usd": pl.Float64,
+        "storage": pl.String,
+    }
+)
+
+
+def pricing_df() -> pl.LazyFrame:
+    plan_df = (
+        pl.DataFrame(
+            list(PLAN_INSTANCE_LOOKUP.items()),
+            schema=PLAN_LOOKUP_SCHEMA,
+            orient="row",
+        )
+        .lazy()
+        .with_columns(pl.col("instance").str.extract(r"(\w+)\.").alias("family"))
+    )
+    with pkg_resources.open_binary("clickhouse_benchmark", "pricing.csv") as f:
+        return (
+            pl.read_csv(f, schema=PRICING_SCHEMA)
+            .lazy()
+            .join(
+                plan_df,
+                on="instance",
+            )
+        )
+
+
+def results_df() -> pl.LazyFrame:
     df = pl.read_csv("results.csv", schema=SCHEMA).lazy()
-    df = (
+    return (
         df.join(
             df.group_by("query").agg(
                 pl.min("hot_query_duration_ms_0.5").alias(
@@ -50,38 +114,93 @@ def perform_analysis() -> None:
             ratio(
                 pl.col("hot_query_duration_ms_0.5"),
                 pl.col("baseline_hot_query_duration_ms_0.5"),
-            ).alias("hot_query_duration_ms_0.5_ratio"),
+            ).alias("hot_query_duration_ms_0.5_normalized"),
             ratio(
                 pl.col("hot_query_duration_ms_0.9"),
                 pl.col("baseline_hot_query_duration_ms_0.9"),
-            ).alias("hot_query_duration_ms_0.9_ratio"),
+            ).alias("hot_query_duration_ms_0.9_normalized"),
             ratio(
                 pl.col("cold_query_duration_ms_0.5"),
                 pl.col("baseline_cold_query_duration_ms_0.5"),
-            ).alias("cold_query_duration_ms_0.5_ratio"),
+            ).alias("cold_query_duration_ms_0.5_normalized"),
             ratio(
                 pl.col("cold_query_duration_ms_0.9"),
                 pl.col("baseline_cold_query_duration_ms_0.9"),
-            ).alias("cold_query_duration_ms_0.9_ratio"),
+            ).alias("cold_query_duration_ms_0.9_normalized"),
         )
         .group_by("plan")
         .agg(
-            geometric_mean(pl.col("hot_query_duration_ms_0.5_ratio")).alias(
-                "hot_query_duration_ms_0.5_result"
+            geometric_mean(pl.col("hot_query_duration_ms_0.5_normalized")).alias(
+                "hot_query_duration_ms_0.5_normalized"
             ),
-            geometric_mean(pl.col("hot_query_duration_ms_0.9_ratio")).alias(
-                "hot_query_duration_ms_0.9_result"
+            geometric_mean(pl.col("hot_query_duration_ms_0.9_normalized")).alias(
+                "hot_query_duration_ms_0.9_normalized"
             ),
-            geometric_mean(pl.col("cold_query_duration_ms_0.5_ratio")).alias(
-                "cold_query_duration_ms_0.5_result"
+            geometric_mean(pl.col("cold_query_duration_ms_0.5_normalized")).alias(
+                "cold_query_duration_ms_0.5_normalized"
             ),
-            geometric_mean(pl.col("cold_query_duration_ms_0.9_ratio")).alias(
-                "cold_query_duration_ms_0.9_result"
+            geometric_mean(pl.col("cold_query_duration_ms_0.9_normalized")).alias(
+                "cold_query_duration_ms_0.9_normalized"
             ),
         )
-    ).sort("hot_query_duration_ms_0.5_result")
-    # write results
-    df.collect().write_csv("results_ratio.csv", include_header=True)
+    ).sort("hot_query_duration_ms_0.5_normalized")
+
+
+def price_performance_df(
+    pricing_df: pl.LazyFrame, results_df: pl.LazyFrame
+) -> pl.LazyFrame:
+    return pricing_df.join(results_df, on="plan").select(
+        "plan",
+        "instance",
+        "family",
+        (
+            pl.col("price_usd")
+            + (
+                pl.when(pl.col("storage") == "EBS only")
+                .then(EBS_MONTHLY_COST)
+                .otherwise(0)
+            )
+        ).alias("price_usd"),
+        pl.col("hot_query_duration_ms_0.5_normalized"),
+        pl.col("cold_query_duration_ms_0.5_normalized"),
+    )
+
+
+def plot_price_performance(df: pl.DataFrame) -> None:
+    charts = []
+    for col in (
+        "hot_query_duration_ms_0.5_normalized",
+        "cold_query_duration_ms_0.5_normalized",
+    ):
+        # altair doesn't like column names with dots
+        mapped_col = col.replace("_ms_0.5", "")
+        chart = (
+            df.select(
+                "plan",
+                "instance",
+                "family",
+                "price_usd",
+                pl.col(col).alias(mapped_col),
+            )
+            .plot.point(
+                x="price_usd",
+                y=mapped_col,
+                color="family",
+                tooltip=["plan", "instance", "price_usd", mapped_col],
+            )
+            .properties(title=mapped_col, width=800, height=600)
+            .interactive()
+        )
+        charts.append(chart)
+    altair.hconcat(*charts).save("price_performance.html")
+
+
+def perform_analysis() -> None:
+    df = results_df()
+    p_df = pricing_df()
+    pp_df = price_performance_df(p_df, df).cache()
+    plot_price_performance(pp_df.collect())
+    pp_df.collect().write_csv("results_normalized.csv", include_header=True)
 
 
 INSERT_SCHEMA = pl.Schema(
@@ -111,13 +230,13 @@ def perform_insert_analysis() -> None:
         ratio(
             pl.col("query_duration_ms_0.5"),
             pl.col("baseline_query_duration_ms_0.5"),
-        ).alias("query_duration_ms_0.5_ratio"),
+        ).alias("query_duration_ms_0.5_normalized"),
         ratio(
             pl.col("query_duration_ms_0.9"),
             pl.col("baseline_query_duration_ms_0.9"),
-        ).alias("query_duration_ms_0.9_ratio"),
-    ).sort("query_duration_ms_0.5_ratio").collect().write_csv(
-        "results_ratio.csv", include_header=True
+        ).alias("query_duration_ms_0.9_normalized"),
+    ).sort("query_duration_ms_0.5_normalized").collect().write_csv(
+        "results_normalized.csv", include_header=True
     )
 
 
