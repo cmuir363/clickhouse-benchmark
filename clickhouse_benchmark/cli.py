@@ -60,8 +60,8 @@ def terminate_instances() -> None:
 
 
 @CLI.command()
-def analyze_results() -> None:
-    perform_analysis()
+def analyze_results(cloud_provider: str = "aws") -> None:
+    perform_analysis(cloud_provider)
 
 
 @CLI.command()

@@ -6,8 +6,11 @@ import altair
 import polars as pl
 
 EBS_MONTHLY_COST = 80.0
+HYPERDISK_MONTHLY_COST = 80.0
+GOOGLE_ATTACHED_SSD_MONTHLY_COST = 88.0
+AWS_ATTACHED_SSD_MONTHLY_COST = 0.0
 
-PLAN_INSTANCE_LOOKUP = {
+AWS_PLAN_INSTANCE_LOOKUP = {
     "internal-arm-block-storage-16": "m8g.xlarge",
     "internal-arm-block-storage-32": "m8g.2xlarge",
     "internal-arm-block-storage-64": "m8g.4xlarge",
@@ -25,6 +28,29 @@ PLAN_INSTANCE_LOOKUP = {
     "business-16": "i3en.large",
     "business-32": "i3en.xlarge",
     "business-64": "i3en.2xlarge",
+}
+
+
+GOOGLE_PLAN_INSTANCE_LOOKUP = {
+    "internal-c3-plans-16": "c3-standard-4-lssd",
+    "internal-c3-plans-32": "c3-standard-8-lssd",
+    "internal-c3-plans-64": "c3-standard-22-lssd",
+    "internal-c4-plans-8": "c4-standard-4",
+    "internal-c4-plans-16": "c4-standard-8",
+    "internal-c4-plans-32": "c4-standard-16",
+    "internal-c4-plans-64": "c4-standard-32",
+    "internal-n4-plans-8": "n4-standard-4",
+    "internal-n4-plans-16": "n4-standard-8",
+    "internal-n4-plans-32": "n4-standard-16",
+    "internal-n4-plans-64": "n4-standard-32",
+    "business-16": "n2d-highmem-2",
+    "business-32": "n2d-highmem-4",
+    "business-64": "n2d-highmem-8",
+    "internal-business-standard-mem-16": "n2-standard-4",
+    "internal-business-standard-mem-32": "n2-standard-8",
+    "internal-business-standard-mem-64": "n2-standard-16",
+    "internal-c3d-plans-32": "c3d-standard-8-lssd",
+    "internal-c3d-plans-64": "c3d-standard-16-lssd",
 }
 
 PLAN_LOOKUP_SCHEMA = pl.Schema(
@@ -62,22 +88,28 @@ PRICING_SCHEMA = pl.Schema(
         "memory_gb": pl.Float64,
         "vcpus": pl.Int64,
         "price_usd": pl.Float64,
-        "storage": pl.String,
+        "ssd_storage": pl.Boolean,
     }
 )
 
 
-def pricing_df() -> pl.LazyFrame:
+def pricing_df(cloud_provider: str) -> pl.LazyFrame:
+    if cloud_provider == "aws":
+        plan_instance_lookup = AWS_PLAN_INSTANCE_LOOKUP
+    elif cloud_provider == "google":
+        plan_instance_lookup = GOOGLE_PLAN_INSTANCE_LOOKUP
     plan_df = (
         pl.DataFrame(
-            list(PLAN_INSTANCE_LOOKUP.items()),
+            list(plan_instance_lookup.items()),
             schema=PLAN_LOOKUP_SCHEMA,
             orient="row",
         )
         .lazy()
-        .with_columns(pl.col("instance").str.extract(r"(\w+)\.").alias("family"))
+        .with_columns(pl.col("instance").str.extract(r"(\w+)[\.-]").alias("family"))
     )
-    with pkg_resources.open_binary("clickhouse_benchmark", "pricing.csv") as f:
+    with pkg_resources.open_binary(
+        "clickhouse_benchmark.pricing", f"{cloud_provider}.csv"
+    ) as f:
         return (
             pl.read_csv(f, schema=PRICING_SCHEMA)
             .lazy()
@@ -147,8 +179,15 @@ def results_df() -> pl.LazyFrame:
 
 
 def price_performance_df(
-    pricing_df: pl.LazyFrame, results_df: pl.LazyFrame
+    pricing_df: pl.LazyFrame, results_df: pl.LazyFrame, cloud_provider: str
 ) -> pl.LazyFrame:
+    if cloud_provider == "aws":
+        network_storage_cost = EBS_MONTHLY_COST
+        ssd_cost = AWS_ATTACHED_SSD_MONTHLY_COST
+    elif cloud_provider == "google":
+        network_storage_cost = 0.0
+        ssd_cost = GOOGLE_ATTACHED_SSD_MONTHLY_COST
+
     return pricing_df.join(results_df, on="plan").select(
         "plan",
         "instance",
@@ -156,9 +195,9 @@ def price_performance_df(
         (
             pl.col("price_usd")
             + (
-                pl.when(pl.col("storage") == "EBS only")
-                .then(EBS_MONTHLY_COST)
-                .otherwise(0)
+                pl.when(pl.col("ssd_storage"))
+                .then(network_storage_cost)
+                .otherwise(ssd_cost)
             )
         ).alias("price_usd"),
         pl.col("hot_query_duration_ms_0.5_normalized"),
@@ -195,10 +234,10 @@ def plot_price_performance(df: pl.DataFrame) -> None:
     altair.hconcat(*charts).save("price_performance.html")
 
 
-def perform_analysis() -> None:
+def perform_analysis(cloud_provider: str) -> None:
     df = results_df()
-    p_df = pricing_df()
-    pp_df = price_performance_df(p_df, df).cache()
+    p_df = pricing_df(cloud_provider)
+    pp_df = price_performance_df(p_df, df, cloud_provider).cache()
     plot_price_performance(pp_df.collect())
     pp_df.collect().write_csv("results_normalized.csv", include_header=True)
 
