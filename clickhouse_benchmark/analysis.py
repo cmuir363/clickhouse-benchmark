@@ -5,10 +5,10 @@ import importlib.resources as pkg_resources
 import altair
 import polars as pl
 
-EBS_MONTHLY_COST = 80.0
-HYPERDISK_MONTHLY_COST = 80.0
-GOOGLE_ATTACHED_SSD_MONTHLY_COST = 88.0
-AWS_ATTACHED_SSD_MONTHLY_COST = 0.0
+AWS_EBS_MONTHLY_COST_PER_GB = 80.0 / 1000
+AWS_ATTACHED_SSD_MONTHLY_COST_PER_GB = 0.0 / 1000
+GOOGLE_HYPERDISK_MONTHLY_COST_PER_GB = 80.0 / 1000
+GOOGLE_ATTACHED_SSD_MONTHLY_COST_PER_GB = 88.0 / 1000
 
 AWS_PLAN_INSTANCE_LOOKUP = {
     "internal-arm-block-storage-16": "m8g.xlarge",
@@ -88,7 +88,7 @@ PRICING_SCHEMA = pl.Schema(
         "memory_gb": pl.Float64,
         "vcpus": pl.Int64,
         "price_usd": pl.Float64,
-        "ssd_storage": pl.Boolean,
+        "ssd_storage_size_gb": pl.String,
     }
 )
 
@@ -116,6 +116,12 @@ def pricing_df(cloud_provider: str) -> pl.LazyFrame:
             .join(
                 plan_df,
                 on="instance",
+            )
+            .with_columns(
+                pl.col("ssd_storage_size_gb")
+                .str.split(",")
+                .list.eval(pl.element().cast(pl.Int64))
+                .alias("ssd_storage_size_gb")
             )
         )
 
@@ -182,11 +188,26 @@ def price_performance_df(
     pricing_df: pl.LazyFrame, results_df: pl.LazyFrame, cloud_provider: str
 ) -> pl.LazyFrame:
     if cloud_provider == "aws":
-        network_storage_cost = EBS_MONTHLY_COST
-        ssd_cost = AWS_ATTACHED_SSD_MONTHLY_COST
+        network_storage_cost = AWS_EBS_MONTHLY_COST_PER_GB
+        ssd_cost = AWS_ATTACHED_SSD_MONTHLY_COST_PER_GB
     elif cloud_provider == "google":
-        network_storage_cost = 0.0
-        ssd_cost = GOOGLE_ATTACHED_SSD_MONTHLY_COST
+        network_storage_cost = GOOGLE_HYPERDISK_MONTHLY_COST_PER_GB
+        ssd_cost = GOOGLE_ATTACHED_SSD_MONTHLY_COST_PER_GB
+
+    # The smallest SSD size over 1 Tb or the maximum SSD size if all are smaller than 1 Tb
+    ssd_sizes_over_1_tb = pl.concat_list(
+        pl.col("ssd_storage_size_gb").list.eval(
+            pl.element().filter(pl.element() >= 1000)
+        )
+    )
+    ssd_size = (
+        pl.when(ssd_sizes_over_1_tb.list.len() > 0)
+        .then(ssd_sizes_over_1_tb.list.min())
+        .otherwise(pl.col("ssd_storage_size_gb").list.max())
+    )
+
+    # Fill up to 1 Tb if needed
+    network_storage_size = pl.max_horizontal(pl.lit(1000) - ssd_size, 0)
 
     return pricing_df.join(results_df, on="plan").select(
         "plan",
@@ -194,11 +215,8 @@ def price_performance_df(
         "family",
         (
             pl.col("price_usd")
-            + (
-                pl.when(pl.col("ssd_storage"))
-                .then(network_storage_cost)
-                .otherwise(ssd_cost)
-            )
+            + ssd_size * ssd_cost
+            + network_storage_size * network_storage_cost
         ).alias("price_usd"),
         pl.col("hot_query_duration_ms_0.5_normalized"),
         pl.col("cold_query_duration_ms_0.5_normalized"),
